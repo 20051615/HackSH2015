@@ -217,34 +217,38 @@ public class ToDoManager {
 			}
 		});
 		btnCheck.setEnabled(false);
-		btnCheck.setFont(new Font("Dialog", Font.PLAIN, 40));
+		btnCheck.setFont(new Font("Dialog", Font.PLAIN, 25));
 		btnCheck.setBounds(131, 113, 63, 55);
 		frame.getContentPane().add(btnCheck);
 		
 		class SharedListSelectionHandler implements ListSelectionListener {			
 			private JButton btnCheck;
+			private JList<Item> thisList, otherList;
 			
-			SharedListSelectionHandler(JButton btnCheck) {
+			SharedListSelectionHandler(JButton btnCheck, JList<Item> otherList) {
 				super();
 				this.btnCheck = btnCheck;
+				this.otherList = otherList;
 			}
+			
+			@SuppressWarnings("unchecked")
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				@SuppressWarnings("unchecked")
-				JList<Item> source = (JList<Item>)e.getSource();
-				if (source.getSelectedIndex() == -1) {
+				thisList = (JList<Item>)e.getSource();
+				if (thisList.isSelectionEmpty()) {
 					btnCheck.setEnabled(false);
 					currentSelected = null;
 				} else {
-					currentSelected = (Item)(source.getSelectedValue());
+					otherList.clearSelection();
+					currentSelected = (Item)(thisList.getSelectedValue());
 					btnCheck.setEnabled(true);
 				}
 			}
 		}
 		
-		SharedListSelectionHandler selectHandler = new SharedListSelectionHandler(btnCheck);
-		listDue.addListSelectionListener(selectHandler);
-		listOnGoing.addListSelectionListener(selectHandler);
+		listDue.clearSelection(); listOnGoing.clearSelection();
+		listDue.addListSelectionListener(new SharedListSelectionHandler(btnCheck, listOnGoing));
+		listOnGoing.addListSelectionListener(new SharedListSelectionHandler(btnCheck, listDue));
 		
 		JLabel lblDue = new JLabel("DUE:");
 		lblDue.setFont(new Font("Dialog", Font.PLAIN, 20));
@@ -271,7 +275,6 @@ public class ToDoManager {
 				try {
 					toAdd = input.getValue();
 				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 					return;
 				}
@@ -280,7 +283,7 @@ public class ToDoManager {
 				reloadItemLists();
 			}
 		});
-		btnAdd.setFont(new Font("Dialog", Font.PLAIN, 40));
+		btnAdd.setFont(new Font("Dialog", Font.PLAIN, 25));
 		btnAdd.setBounds(232, 113, 63, 55);
 		frame.getContentPane().add(btnAdd);
 	}

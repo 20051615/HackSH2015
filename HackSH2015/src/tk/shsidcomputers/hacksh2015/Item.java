@@ -26,16 +26,16 @@ public class Item implements Comparable<Item> {
 	@Override
 	public String toString() {
 		if (mustStartDate != null) {
-			return title + " (due " + ItemListProcessor.getYMD(dueDate)[1] + "/"
-					+ ItemListProcessor.getYMD(dueDate)[2];
+			return title + " (Due " + ItemListProcessor.getYMD(dueDate)[1] + "/"
+					+ ItemListProcessor.getYMD(dueDate)[2] + ")";
 		}
 		return title;
 	}
 	
 	public int compareTo(Item otherItem) {
-		int n = priority.ordinal() - otherItem.priority.ordinal();
-		if (n != 0) return n;
-		return dueDate.compareTo(otherItem.dueDate);
+		int comparison = dueDate.compareTo(otherItem.dueDate);
+		if (comparison != 0) return comparison;
+		return priority.ordinal() - otherItem.priority.ordinal();
 		
 	}
 	
