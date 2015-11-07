@@ -134,6 +134,7 @@ public class ToDoManager {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.getContentPane().setFont(new Font("Dialog", Font.PLAIN, 18));
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -145,9 +146,9 @@ public class ToDoManager {
 		frame.setBounds(100, 100, 600, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		JButton btnBack = new JButton("< Back");
-		btnBack.setBounds(30, 33, 89, 31);
-		btnBack.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		JButton btnBack = new JButton("<<");
+		btnBack.setBounds(30, 33, 70, 45);
+		btnBack.setFont(new Font("Dialog", Font.PLAIN, 18));
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
@@ -156,32 +157,54 @@ public class ToDoManager {
 		frame.getContentPane().add(btnBack);
 		
 		JLabel lblToday = new JLabel("Today");
-		lblToday.setBounds(189, 30, 82, 37);
-		lblToday.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		lblToday.setBounds(183, 28, 107, 50);
+		lblToday.setFont(new Font("Dialog", Font.PLAIN, 30));
 		frame.getContentPane().add(lblToday);
 		
 		JLabel lblDate = new JLabel("--/--/----");
-		lblDate.setBounds(311, 30, 110, 37);
-		lblDate.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		lblDate.setBounds(305, 35, 110, 37);
+		lblDate.setFont(new Font("Dialog", Font.PLAIN, 30));
 		frame.getContentPane().add(lblDate);
 		
 		JButton btnTmrw = new JButton(">");
-		btnTmrw.setBounds(491, 33, 45, 31);
-		btnTmrw.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnTmrw.setBounds(490, 33, 70, 45);
+		btnTmrw.setFont(new Font("Dialog", Font.PLAIN, 18));
 		frame.getContentPane().add(btnTmrw);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(111, 119, 334, 99);
+		scrollPane.setBounds(131, 183, 334, 99);
 		frame.getContentPane().add(scrollPane);
 		
 		JList listDue = new JList();
+		listDue.setFont(new Font("Dialog", Font.PLAIN, 18));
 		scrollPane.setViewportView(listDue);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(111, 262, 334, 99);
+		scrollPane_1.setBounds(131, 312, 334, 99);
 		frame.getContentPane().add(scrollPane_1);
 		
 		JList listOnGoing = new JList();
+		listOnGoing.setFont(new Font("Dialog", Font.PLAIN, 18));
 		scrollPane_1.setViewportView(listOnGoing);
+		
+		JButton btnCheck = new JButton("\u2713");
+		btnCheck.setFont(new Font("Dialog", Font.PLAIN, 40));
+		btnCheck.setBounds(131, 113, 63, 55);
+		frame.getContentPane().add(btnCheck);
+		
+		JLabel lblDue = new JLabel("DUE:");
+		lblDue.setFont(new Font("Dialog", Font.PLAIN, 20));
+		lblDue.setBounds(15, 216, 116, 30);
+		frame.getContentPane().add(lblDue);
+		
+		JLabel lblOngoing = new JLabel("ONGOING:\r\n");
+		lblOngoing.setFont(new Font("Dialog", Font.PLAIN, 20));
+		lblOngoing.setBounds(15, 345, 116, 30);
+		frame.getContentPane().add(lblOngoing);
+		
+		JButton btnCompleted = new JButton("Completed");
+		btnCompleted.setFont(new Font("Dialog", Font.PLAIN, 18));
+		btnCompleted.setBounds(342, 113, 123, 55);
+		frame.getContentPane().add(btnCompleted);
 	}
 }
