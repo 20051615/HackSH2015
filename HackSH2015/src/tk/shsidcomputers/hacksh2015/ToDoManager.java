@@ -289,7 +289,7 @@ public class ToDoManager {
 		}
 		onGoingItemList.clear();
 		for (Item toAdd: ItemListProcessor.getOnGoing(currentDate, current)) {
-			dueItemList.addElement(toAdd);
+			onGoingItemList.addElement(toAdd);
 		}
 	}
 }
