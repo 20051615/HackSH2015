@@ -17,7 +17,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 
 public class ToDoManager {
@@ -27,8 +26,8 @@ public class ToDoManager {
 	private Storage archived;
 	private Thread storer;
 	private Date currentDate;
-	private ListModel<Item> dueItemList;
-	private ListModel<Item> onGoingItemList;
+	private DefaultListModel<Item> dueItemList;
+	private DefaultListModel<Item> onGoingItemList;
 	
 	private class Storer implements Runnable {
 		@Override
@@ -118,9 +117,7 @@ public class ToDoManager {
 		current = new Storage(currentfile);
 		archived = new Storage(archivefile);
 		currentDate = ItemListProcessor.getTodayDate();
-		
 		initialize();
-		
 		storer = new Thread(new Storer());
 		storer.start();
 	}
@@ -143,6 +140,7 @@ public class ToDoManager {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		reloadItemLists();
 		frame = new JFrame();
 		frame.getContentPane().setFont(new Font("Dialog", Font.PLAIN, 18));
 		frame.addWindowListener(new WindowAdapter() {
@@ -185,7 +183,7 @@ public class ToDoManager {
 		scrollPane.setBounds(131, 183, 334, 99);
 		frame.getContentPane().add(scrollPane);
 		
-		JList listDue = new JList();
+		JList<Item> listDue = new JList<>(dueItemList);
 		listDue.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listDue.setFont(new Font("Dialog", Font.PLAIN, 18));
 		scrollPane.setViewportView(listDue);
@@ -194,7 +192,7 @@ public class ToDoManager {
 		scrollPane_1.setBounds(131, 312, 334, 99);
 		frame.getContentPane().add(scrollPane_1);
 		
-		JList listOnGoing = new JList();
+		JList<Item> listOnGoing = new JList<>(onGoingItemList);
 		listOnGoing.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listOnGoing.setFont(new Font("Dialog", Font.PLAIN, 18));
 		scrollPane_1.setViewportView(listOnGoing);
@@ -219,5 +217,16 @@ public class ToDoManager {
 		btnCompleted.setFont(new Font("Dialog", Font.PLAIN, 18));
 		btnCompleted.setBounds(342, 113, 123, 55);
 		frame.getContentPane().add(btnCompleted);
+	}
+	
+	private void reloadItemLists() {
+		dueItemList = new DefaultListModel<>();
+		for (Item toAdd: ItemListProcessor.getDueTomorrow(currentDate, current)) {
+			dueItemList.addElement(toAdd);
+		}
+		onGoingItemList = new DefaultListModel<>();
+		for (Item toAdd: ItemListProcessor.getOnGoing(currentDate, current)) {
+			dueItemList.addElement(toAdd);
+		}
 	}
 }
