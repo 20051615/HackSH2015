@@ -18,14 +18,11 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.JTextArea;
-import java.awt.Color;
-import javax.swing.UIManager;
-import javax.swing.ScrollPaneConstants;
 
 public class ToDoManager {
 
