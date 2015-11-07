@@ -23,6 +23,15 @@ public class Item implements Comparable<Item> {
 		this.priority = priority;
 	}
 	
+	@Override
+	public String toString() {
+		if (mustStartDate != null) {
+			return title + " (due " + ItemListProcessor.getYMD(dueDate)[1] + "/"
+					+ ItemListProcessor.getYMD(dueDate)[2];
+		}
+		return title;
+	}
+	
 	public int compareTo(Item otherItem) {
 		int n = priority.ordinal() - otherItem.priority.ordinal();
 		if (n != 0) return n;
