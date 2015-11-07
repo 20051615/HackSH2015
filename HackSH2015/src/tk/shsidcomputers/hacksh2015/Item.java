@@ -104,4 +104,44 @@ public class Item implements Comparable<Item> {
 		Priority priority = Priority.values()[(int) obj.get("priority")];
 		return new Item(title, details, mustStartDate, dueDate, isDone, priority);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + details.hashCode();
+		result = prime * result + dueDate.hashCode();
+		result = prime * result + (isDone ? 1231 : 1237);
+		result = prime * result + ((mustStartDate == null) ? 0 : mustStartDate.hashCode());
+		result = prime * result + priority.hashCode();
+		result = prime * result + title.hashCode();
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Item other = (Item) obj;
+		if (!details.equals(other.details))
+			return false;
+		if (!dueDate.equals(other.dueDate))
+			return false;
+		if (isDone != other.isDone)
+			return false;
+		if (mustStartDate == null) {
+			if (other.mustStartDate != null)
+				return false;
+		} else if (!mustStartDate.equals(other.mustStartDate))
+			return false;
+		if (priority != other.priority)
+			return false;
+		if (!title.equals(other.title))
+			return false;
+		return true;
+	}
 }
