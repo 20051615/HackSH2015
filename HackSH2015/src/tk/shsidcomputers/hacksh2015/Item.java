@@ -2,6 +2,8 @@ package tk.shsidcomputers.hacksh2015;
 
 import java.util.Date;
 
+import org.json.JSONObject;
+
 /**
  * @author SHSIDComputerClub
  * Note: this class has a natural ordering that is inconsistent with equals.
@@ -69,7 +71,22 @@ public class Item implements Comparable<Item>{
 		return mustStartDate == null;
 	}
 	
+	public Date getStartDate(Date newDate) {
+		return hasStartDate() ? (Date) dueDate.clone() : getDue();
+	}
+	
 	public void setStartDate(Date newDate) {
 		mustStartDate.setTime(newDate.getTime());
+	}
+	
+	public String toJSON() {
+		JSONObject obj = new JSONObject();
+		obj.put("title", title);
+		obj.put("details", details);
+		obj.put("mustStartDate", mustStartDate.getTime());
+		obj.put("dueDate", dueDate.getTime());
+		obj.put("isDone", isDone);
+		obj.put("priority", priority);
+		return obj.toString();
 	}
 }
