@@ -8,6 +8,16 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import java.awt.GridBagLayout;
+import javax.swing.JLabel;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.Font;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JScrollPane;
+import javax.swing.JList;
 
 public class ToDoManager {
 
@@ -133,8 +143,48 @@ public class ToDoManager {
 				close();
 			}
 		});
-		frame.setBounds(100, 100, 450, 300);
+		
+		frame.setResizable(false);
+		frame.setBounds(100, 100, 600, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		JButton btnBack = new JButton("< Back");
+		btnBack.setBounds(30, 33, 89, 31);
+		btnBack.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		frame.getContentPane().setLayout(null);
+		frame.getContentPane().add(btnBack);
+		
+		JLabel lblToday = new JLabel("Today");
+		lblToday.setBounds(189, 30, 82, 37);
+		lblToday.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		frame.getContentPane().add(lblToday);
+		
+		JLabel lblDate = new JLabel("--/--/----");
+		lblDate.setBounds(311, 30, 110, 37);
+		lblDate.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		frame.getContentPane().add(lblDate);
+		
+		JButton btnTmrw = new JButton(">");
+		btnTmrw.setBounds(491, 33, 45, 31);
+		btnTmrw.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		frame.getContentPane().add(btnTmrw);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(111, 119, 334, 99);
+		frame.getContentPane().add(scrollPane);
+		
+		JList listDue = new JList();
+		scrollPane.setViewportView(listDue);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(111, 262, 334, 99);
+		frame.getContentPane().add(scrollPane_1);
+		
+		JList listOnGoing = new JList();
+		scrollPane_1.setViewportView(listOnGoing);
 	}
-
 }
