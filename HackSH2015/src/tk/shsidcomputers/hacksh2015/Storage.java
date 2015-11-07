@@ -19,7 +19,7 @@ public class Storage extends HashSet<Item> {
 		reader.close();
 	}
 	
-	public void store() throws IOException{
+	public synchronized void store() throws IOException{
 		if (!file.delete()) throw new IOException();
 		file.createNewFile();
 		PrintWriter writer = new PrintWriter(file);
