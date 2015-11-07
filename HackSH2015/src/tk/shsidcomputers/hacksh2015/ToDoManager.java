@@ -286,6 +286,22 @@ public class ToDoManager {
 		btnAdd.setFont(new Font("Dialog", Font.PLAIN, 25));
 		btnAdd.setBounds(232, 113, 63, 55);
 		frame.getContentPane().add(btnAdd);
+		
+		JLabel lblNewLabel = new JLabel("Description:");
+		lblNewLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
+		lblNewLabel.setBounds(40, 426, 107, 21);
+		frame.getContentPane().add(lblNewLabel);
+		
+		JLabel lblNewLabel_1 = new JLabel("");
+		lblNewLabel_1.setFont(new Font("Dialog", Font.PLAIN, 18));
+		lblNewLabel_1.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_1.setBounds(40, 454, 425, 99);
+		frame.getContentPane().add(lblNewLabel_1);
+		
+		JButton btnNewButton = new JButton("Edit");
+		btnNewButton.setFont(new Font("Dialog", Font.PLAIN, 18));
+		btnNewButton.setBounds(490, 269, 70, 55);
+		frame.getContentPane().add(btnNewButton);
 	}
 	
 	private void reloadItemLists() {
