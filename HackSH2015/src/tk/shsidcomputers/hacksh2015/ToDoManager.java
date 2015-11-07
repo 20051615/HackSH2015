@@ -145,6 +145,8 @@ public class ToDoManager {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		dueItemList = new DefaultListModel<>();
+		onGoingItemList = new DefaultListModel<>();
 		reloadItemLists();
 		frame = new JFrame();
 		frame.getContentPane().setFont(new Font("Dialog", Font.PLAIN, 18));
@@ -267,14 +269,7 @@ public class ToDoManager {
 					Item toAdd = (new Input()).getValue();
 					if (toAdd == null) return;
 					current.add(toAdd);
-					if (ItemListProcessor.dateDifference(toAdd.getDue(), currentDate) == 1) {
-						dueItemList.addElement(toAdd);
-						return;
-					}
-					if (toAdd.hasStartDate() &&
-							ItemListProcessor.dateDifference(toAdd.getDue(), currentDate) > 1 &&
-							ItemListProcessor.dateDifference(toAdd.getStartDate(), currentDate) <= 0)
-							onGoingItemList.addElement(toAdd);
+					reloadItemLists();
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
 					return;
@@ -288,11 +283,11 @@ public class ToDoManager {
 	}
 	
 	private void reloadItemLists() {
-		dueItemList = new DefaultListModel<>();
+		dueItemList.clear();
 		for (Item toAdd: ItemListProcessor.getDueTomorrow(currentDate, current)) {
 			dueItemList.addElement(toAdd);
 		}
-		onGoingItemList = new DefaultListModel<>();
+		onGoingItemList.clear();
 		for (Item toAdd: ItemListProcessor.getOnGoing(currentDate, current)) {
 			dueItemList.addElement(toAdd);
 		}
