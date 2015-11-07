@@ -271,7 +271,7 @@ public class ToDoManager {
 		
 		JLabel lblDue = new JLabel("Due:");
 		lblDue.setFont(new Font("Dialog", Font.PLAIN, 20));
-		lblDue.setBounds(61, 216, 70, 30);
+		lblDue.setBounds(30, 216, 101, 30);
 		frame.getContentPane().add(lblDue);
 		
 		JLabel lblOngoing = new JLabel("Ongoing:\r\n");
