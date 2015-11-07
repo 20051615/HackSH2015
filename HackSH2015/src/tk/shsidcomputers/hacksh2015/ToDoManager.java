@@ -336,7 +336,7 @@ public class ToDoManager {
 		btnEdit.setFont(new Font("Dialog", Font.PLAIN, 18));
 		btnEdit.setBounds(490, 269, 70, 55);
 		frame.getContentPane().add(btnEdit);
-		
+		resetStuff(lblNewLabel, lblNewLabel_1, lblToday, lblDate);
 	}
 	
 	private void reloadItemLists() {
