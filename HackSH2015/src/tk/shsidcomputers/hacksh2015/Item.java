@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Item {
 	private String title, desc;
-	private Date dueDate;
+	private Date mustStartDate, dueDate;
 	private boolean isDone;
 	private Priority priority;
 	
@@ -33,8 +33,8 @@ public class Item {
 		return (Date) dueDate.clone();
 	}
 	
-	public void setDue(long time) {
-		dueDate.setTime(time);
+	public void setDue(Date newDate) {
+		dueDate.setTime(newDate.getTime());
 	}
 
 	public void finished() {
@@ -55,5 +55,13 @@ public class Item {
 
 	public void setPriority(Priority priority) {
 		this.priority = priority;
+	}
+	
+	public boolean hasStartDate() {
+		return mustStartDate == null;
+	}
+	
+	public void setStartDate(Date newDate) {
+		mustStartDate.setTime(newDate.getTime());
 	}
 }
