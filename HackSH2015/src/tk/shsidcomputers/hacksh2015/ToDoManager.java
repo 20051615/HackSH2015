@@ -20,6 +20,8 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class ToDoManager {
 
@@ -201,6 +203,17 @@ public class ToDoManager {
 		scrollPane_1.setViewportView(listOnGoing);
 		
 		JButton btnCheck = new JButton("\u2713");
+		btnCheck.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (currentSelected != null) {
+					current.remove(currentSelected);
+					archived.add(currentSelected);
+					dueItemList.removeElement(currentSelected);
+					onGoingItemList.removeElement(currentSelected);
+				}
+			}
+		});
 		btnCheck.setEnabled(false);
 		btnCheck.setFont(new Font("Dialog", Font.PLAIN, 40));
 		btnCheck.setBounds(131, 113, 63, 55);
@@ -231,17 +244,6 @@ public class ToDoManager {
 		listDue.addListSelectionListener(selectHandler);
 		listOnGoing.addListSelectionListener(selectHandler);
 		
-		btnCheck.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
-				if (currentSelected != null) {
-					current.remove(currentSelected);
-					archived.add(currentSelected);
-					dueItemList.removeElement(currentSelected);
-					onGoingItemList.removeElement(currentSelected);
-				}
-			}
-		});
-		
 		JLabel lblDue = new JLabel("DUE:");
 		lblDue.setFont(new Font("Dialog", Font.PLAIN, 20));
 		lblDue.setBounds(15, 216, 116, 30);
@@ -256,6 +258,33 @@ public class ToDoManager {
 		btnCompleted.setFont(new Font("Dialog", Font.PLAIN, 18));
 		btnCompleted.setBounds(342, 113, 123, 55);
 		frame.getContentPane().add(btnCompleted);
+		
+		JButton btnAdd = new JButton("+");
+		btnAdd.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+					Item toAdd = (new Input()).getValue();
+					if (toAdd == null) return;
+					current.add(toAdd);
+					if (ItemListProcessor.dateDifference(toAdd.getDue(), currentDate) == 1) {
+						dueItemList.addElement(toAdd);
+						return;
+					}
+					if (toAdd.hasStartDate() &&
+							ItemListProcessor.dateDifference(toAdd.getDue(), currentDate) > 1 &&
+							ItemListProcessor.dateDifference(toAdd.getStartDate(), currentDate) <= 0)
+							onGoingItemList.addElement(toAdd);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+					return;
+				}
+				
+			}
+		});
+		btnAdd.setFont(new Font("Dialog", Font.PLAIN, 40));
+		btnAdd.setBounds(232, 113, 63, 55);
+		frame.getContentPane().add(btnAdd);
 	}
 	
 	private void reloadItemLists() {
