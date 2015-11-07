@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 final class ItemListProcessor {
 	private ItemListProcessor(){}
@@ -52,6 +53,17 @@ final class ItemListProcessor {
 	
 	static Date getNextDate(Date current) {
 		return new Date(current.getTime() + 24 * 3600000);
+	}
+	
+	static int[] getYMD(Date input) {
+		Calendar temp = Calendar.getInstance();
+		temp.clear();
+		temp.setTime(input);
+		int[] YMD = new int[3];
+		YMD[0] = temp.get(Calendar.YEAR);
+		YMD[1] = temp.get(Calendar.MONTH) + 1;
+		YMD[2] = temp.get(Calendar.DAY_OF_MONTH);
+		return YMD;
 	}
 	
 }
