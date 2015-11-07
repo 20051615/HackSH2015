@@ -47,8 +47,8 @@ public class Item implements Comparable<Item> {
 		return (Date) dueDate.clone();
 	}
 	
-	public void setDue(Date newDate) {
-		dueDate.setTime(newDate.getTime());
+	public void setDue(long newTime) {
+		dueDate.setTime(newTime);
 	}
 
 	public void finished() {
@@ -72,15 +72,18 @@ public class Item implements Comparable<Item> {
 	}
 	
 	public boolean hasStartDate() {
-		return mustStartDate == null;
+		return mustStartDate != null;
 	}
 	
-	public Date getStartDate(Date newDate) {
-		return hasStartDate() ? (Date) dueDate.clone() : getDue();
+	public Date getStartDate() {
+		return hasStartDate() ? (Date) dueDate.clone() : null;
 	}
 	
-	public void setStartDate(Date newDate) {
-		mustStartDate.setTime(newDate.getTime());
+	public void setStartDate(long newTime) {
+		if (mustStartDate == null)
+			mustStartDate = new Date(newTime);
+		else
+			mustStartDate.setTime(newTime);
 	}
 	
 	public String toJSON() {
