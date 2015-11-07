@@ -24,7 +24,10 @@ public class Item implements Comparable<Item> {
 	}
 	
 	public int compareTo(Item otherItem) {
-		return priority.ordinal() - otherItem.priority.ordinal();
+		int n = priority.ordinal() - otherItem.priority.ordinal();
+		if (n != 0) return n;
+		return dueDate.compareTo(otherItem.dueDate);
+		
 	}
 	
 	public String getTitle() {
