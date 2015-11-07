@@ -21,9 +21,9 @@ import java.awt.event.WindowEvent;
 import java.util.Date;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.Dialog.ModalityType;
 
 public class Input extends JDialog {
-
 	private static final long serialVersionUID = 3816330566947754829L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtTitle;
@@ -36,7 +36,6 @@ public class Input extends JDialog {
 	private JTextField txtDesc;
 	JComboBox<Priority> cmbPriority;
 	private boolean stChanged = false;
-	private boolean done = false;
 	private Item value;
 
 	/**
@@ -53,11 +52,7 @@ public class Input extends JDialog {
 	}
 
 	public Item getValue() throws InterruptedException {
-		while (true) {
-			if (done)
-				break;
-			Thread.sleep(10);
-		}
+
 		dispose();
 		return value;
 	}
@@ -83,7 +78,6 @@ public class Input extends JDialog {
 					value == null ? false : value.isFinished(), priority);
 		}
 		setVisible(false);
-		done = true;
 	}
 	
 	/**
@@ -107,6 +101,7 @@ public class Input extends JDialog {
 	}
 	
 	public Input() {
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -334,7 +329,5 @@ public class Input extends JDialog {
 			}
 			
 		}
-		
-		setVisible(true);
 	}
 }

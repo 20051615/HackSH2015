@@ -265,16 +265,19 @@ public class ToDoManager {
 		btnAdd.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				Input input = new Input();
+				input.setVisible(true);
+				Item toAdd;
 				try {
-					Item toAdd = (new Input()).getValue();
-					if (toAdd == null) return;
-					current.add(toAdd);
-					reloadItemLists();
+					toAdd = input.getValue();
 				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
 					e1.printStackTrace();
 					return;
 				}
-				
+				if (toAdd == null) return;
+				current.add(toAdd);
+				reloadItemLists();
 			}
 		});
 		btnAdd.setFont(new Font("Dialog", Font.PLAIN, 40));

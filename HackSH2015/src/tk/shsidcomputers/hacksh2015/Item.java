@@ -104,7 +104,7 @@ public class Item implements Comparable<Item> {
 		JSONObject obj = new JSONObject(json);
 		String title = (String) obj.get("title");
 		String details = (String) obj.get("details");
-		Date mustStartDate = obj.get("mustStartDate") == null ? null : new Date((long) obj.get("mustStartDate"));
+		Date mustStartDate = obj.opt("mustStartDate") == null ? null : new Date((long) obj.get("mustStartDate"));
 		Date dueDate = new Date((long) obj.get("dueDate"));
 		boolean isDone = (boolean) obj.get("isDone");
 		Priority priority = Priority.values()[(int) obj.get("priority")];
