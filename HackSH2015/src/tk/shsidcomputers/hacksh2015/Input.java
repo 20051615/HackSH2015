@@ -63,9 +63,7 @@ public class Input extends JDialog {
 	}
 	
 	private void setValueAndExit(boolean b) {
-		if (!b)
-			value = null;
-		else {
+		if (b) {
 			String title = txtTitle.getText();
 			String details = txtDesc.getText();
 			Date dueDate = ItemListProcessor.getDayStartDate(
@@ -81,7 +79,8 @@ public class Input extends JDialog {
 			if (mustStartDate.equals(dueDate))
 				mustStartDate = null;
 			Priority priority = (Priority) cmbPriority.getSelectedItem();
-			value = new Item(title, details, mustStartDate, dueDate, false, priority);
+			value = new Item(title, details, mustStartDate, dueDate,
+					value == null ? false : value.isFinished(), priority);
 		}
 		setVisible(false);
 		done = true;
@@ -90,6 +89,23 @@ public class Input extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
+	public Input(Item value) {
+		this();
+		this.value = value;
+		txtTitle.setText(value.getTitle());
+		txtDesc.setText(value.getDetails());
+		int[] dueDate = ItemListProcessor.getYMD(value.getDue());
+		txtDueYear.setText(Integer.toString(dueDate[0]));
+		txtDueMonth.setText(Integer.toString(dueDate[1]));
+		txtDueDay.setText(Integer.toString(dueDate[2]));
+		int[] mustStartDate = ItemListProcessor.getYMD(
+				value.hasStartDate() ? value.getStartDate() : value.getDue());
+		txtStYear.setText(Integer.toString(mustStartDate[0]));
+		txtStMonth.setText(Integer.toString(mustStartDate[1]));
+		txtStDay.setText(Integer.toString(mustStartDate[2]));		
+		cmbPriority.setSelectedItem(value.getPriority());
+	}
+	
 	public Input() {
 		addWindowListener(new WindowAdapter() {
 			@Override
