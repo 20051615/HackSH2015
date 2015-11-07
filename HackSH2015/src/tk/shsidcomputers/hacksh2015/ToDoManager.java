@@ -18,6 +18,8 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class ToDoManager {
 
@@ -28,6 +30,7 @@ public class ToDoManager {
 	private Date currentDate;
 	private DefaultListModel<Item> dueItemList;
 	private DefaultListModel<Item> onGoingItemList;
+	private Item currentSelected;
 	
 	private class Storer implements Runnable {
 		@Override
@@ -202,6 +205,42 @@ public class ToDoManager {
 		btnCheck.setFont(new Font("Dialog", Font.PLAIN, 40));
 		btnCheck.setBounds(131, 113, 63, 55);
 		frame.getContentPane().add(btnCheck);
+		
+		class SharedListSelectionHandler implements ListSelectionListener {			
+			private JButton btnCheck;
+			
+			SharedListSelectionHandler(JButton btnCheck) {
+				super();
+				this.btnCheck = btnCheck;
+			}
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				@SuppressWarnings("unchecked")
+				JList<Item> source = (JList<Item>)e.getSource();
+				if (source.getSelectedIndex() == -1) {
+					btnCheck.setEnabled(false);
+					currentSelected = null;
+				} else {
+					currentSelected = (Item)(source.getSelectedValue());
+					btnCheck.setEnabled(true);
+				}
+			}
+		}
+		
+		SharedListSelectionHandler selectHandler = new SharedListSelectionHandler(btnCheck);
+		listDue.addListSelectionListener(selectHandler);
+		listOnGoing.addListSelectionListener(selectHandler);
+		
+		btnCheck.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				if (currentSelected != null) {
+					current.remove(currentSelected);
+					archived.add(currentSelected);
+					dueItemList.removeElement(currentSelected);
+					onGoingItemList.removeElement(currentSelected);
+				}
+			}
+		});
 		
 		JLabel lblDue = new JLabel("DUE:");
 		lblDue.setFont(new Font("Dialog", Font.PLAIN, 20));
