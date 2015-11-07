@@ -276,6 +276,13 @@ public class ToDoManager {
 		frame.getContentPane().add(lblOngoing);
 		
 		JButton btnCompleted = new JButton("DoneList");
+		btnCompleted.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Archive a = new Archive(archived);
+				a.setVisible(true);
+			}
+		});
 		btnCompleted.setFont(new Font("Dialog", Font.PLAIN, 18));
 		btnCompleted.setBounds(330, 113, 135, 55);
 		frame.getContentPane().add(btnCompleted);

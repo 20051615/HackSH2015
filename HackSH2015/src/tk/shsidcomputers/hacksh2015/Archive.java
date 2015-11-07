@@ -19,15 +19,13 @@ import javax.swing.border.EmptyBorder;
 public class Archive extends JFrame {
 	private static final long serialVersionUID = 5540165914513607110L;
 	private JPanel contentPane;
-	private Storage archived;
 
 	/**
 	 * Create the frame.
 	 */
-	public Archive(Storage archived) {
+	public Archive(final Storage archived) {
 		setTitle("View archive");
 		final DefaultListModel<Item> archivedList = new DefaultListModel<>();
-		this.archived = archived;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 500);
 		contentPane = new JPanel();
@@ -39,7 +37,7 @@ public class Archive extends JFrame {
 		scrollPane.setBounds(42, 129, 345, 277);
 		contentPane.add(scrollPane);
 		
-		JList<Item> list = new JList<Item>();
+		JList<Item> list = new JList<Item>(archivedList);
 		list.setFont(new Font("Dialog", Font.PLAIN, 18));
 		scrollPane.setViewportView(list);
 		
@@ -53,18 +51,32 @@ public class Archive extends JFrame {
 		btnClear.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Archive.this.archived.clear();
+				archived.clear();
 				archivedList.clear();
 			}
 		});
 		btnClear.setFont(new Font("Dialog", Font.PLAIN, 18));
-		btnClear.setBounds(42, 69, 123, 45);
+		btnClear.setBounds(264, 72, 123, 45);
 		contentPane.add(btnClear);
 		
-		ArrayList<Item> archivedarray = new ArrayList<Item>(archived);
-		Collections.sort(archivedarray);
-		for (Item i : archivedarray) {
-			archivedList.addElement(i);
-		}
+		MouseAdapter refresh = new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				archivedList.clear();
+				ArrayList<Item> archivedarray = new ArrayList<Item>(archived);
+				Collections.sort(archivedarray);
+				for (Item i : archivedarray) {
+					archivedList.addElement(i);
+				}
+			}
+		};
+		
+		JButton btnRefresh = new JButton("Refesh");
+		btnRefresh.addMouseListener(refresh);
+		btnRefresh.setFont(new Font("Dialog", Font.PLAIN, 18));
+		btnRefresh.setBounds(42, 72, 123, 45);
+		contentPane.add(btnRefresh);
+		
+		refresh.mouseClicked(null);
 	}
 }
