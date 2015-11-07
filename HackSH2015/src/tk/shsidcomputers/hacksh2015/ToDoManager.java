@@ -2,14 +2,13 @@ package tk.shsidcomputers.hacksh2015;
 
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.Date;
 
 import javax.swing.DefaultListModel;
@@ -165,29 +164,25 @@ public class ToDoManager {
 		JButton btnBack = new JButton("<<");
 		btnBack.setBounds(30, 33, 70, 45);
 		btnBack.setFont(new Font("Dialog", Font.PLAIN, 18));
-		btnBack.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
 		frame.getContentPane().setLayout(null);
 		frame.getContentPane().add(btnBack);
 		
-		JLabel lblToday = new JLabel("Today");
+		final JLabel lblToday = new JLabel("Today");
 		lblToday.setBounds(183, 28, 107, 50);
-		lblToday.setFont(new Font("Dialog", Font.PLAIN, 30));
+		lblToday.setFont(new Font("Dialog", Font.PLAIN, 20));
 		frame.getContentPane().add(lblToday);
 		
-		JLabel lblDate = new JLabel("--/--/----");
-		lblDate.setBounds(305, 35, 110, 37);
-		lblDate.setFont(new Font("Dialog", Font.PLAIN, 30));
+		final JLabel lblDate = new JLabel("--/--/----");
+		lblDate.setBounds(305, 35, 135, 37);
+		lblDate.setFont(new Font("Dialog", Font.PLAIN, 20));
 		frame.getContentPane().add(lblDate);
 		
-		JLabel lblNewLabel = new JLabel("");
+		final JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
 		lblNewLabel.setBounds(40, 426, 107, 21);
 		frame.getContentPane().add(lblNewLabel);
 		
-		JLabel lblNewLabel_1 = new JLabel("");
+		final JLabel lblNewLabel_1 = new JLabel("");
 		lblNewLabel_1.setFont(new Font("Dialog", Font.PLAIN, 18));
 		lblNewLabel_1.setVerticalAlignment(SwingConstants.TOP);
 		lblNewLabel_1.setBounds(40, 454, 425, 99);
@@ -216,7 +211,7 @@ public class ToDoManager {
 		listOnGoing.setFont(new Font("Dialog", Font.PLAIN, 18));
 		scrollPane_1.setViewportView(listOnGoing);
 		
-		JButton btnCheck = new JButton("\u2713");
+		final JButton btnCheck = new JButton("\u2713");
 		btnCheck.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -225,6 +220,7 @@ public class ToDoManager {
 					archived.add(currentSelected);
 					dueItemList.removeElement(currentSelected);
 					onGoingItemList.removeElement(currentSelected);
+					resetStuff(lblNewLabel, lblNewLabel_1, lblToday, lblDate);
 				}
 			}
 		});
@@ -269,12 +265,12 @@ public class ToDoManager {
 		listDue.addListSelectionListener(new SharedListSelectionHandler(btnCheck, listOnGoing, lblNewLabel, lblNewLabel_1));
 		listOnGoing.addListSelectionListener(new SharedListSelectionHandler(btnCheck, listDue, lblNewLabel, lblNewLabel_1));
 		
-		JLabel lblDue = new JLabel("Due:");
+		final JLabel lblDue = new JLabel("Due:");
 		lblDue.setFont(new Font("Dialog", Font.PLAIN, 20));
 		lblDue.setBounds(30, 216, 101, 30);
 		frame.getContentPane().add(lblDue);
 		
-		JLabel lblOngoing = new JLabel("Ongoing:\r\n");
+		final JLabel lblOngoing = new JLabel("Ongoing:\r\n");
 		lblOngoing.setFont(new Font("Dialog", Font.PLAIN, 20));
 		lblOngoing.setBounds(12, 345, 119, 30);
 		frame.getContentPane().add(lblOngoing);
@@ -300,16 +296,37 @@ public class ToDoManager {
 				if (toAdd == null) return;
 				current.add(toAdd);
 				reloadItemLists();
+				resetStuff(lblNewLabel, lblNewLabel_1, lblToday, lblDate);
 			}
 		});
 		btnAdd.setFont(new Font("Dialog", Font.PLAIN, 25));
 		btnAdd.setBounds(232, 113, 63, 55);
 		frame.getContentPane().add(btnAdd);
 		
+		btnBack.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				currentDate = ItemListProcessor.getTodayDate();
+				reloadItemLists();
+				resetStuff(lblNewLabel, lblNewLabel_1, lblToday, lblDate);
+			}
+		});
+		
+		btnTmrw.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				currentDate = ItemListProcessor.getNextDate(currentDate);
+				reloadItemLists();
+				resetStuff(lblNewLabel, lblNewLabel_1, lblToday, lblDate);
+			}
+		});
+		
 		JButton btnEdit = new JButton("Edit");
 		btnEdit.setFont(new Font("Dialog", Font.PLAIN, 18));
 		btnEdit.setBounds(490, 269, 70, 55);
 		frame.getContentPane().add(btnEdit);
+		
+		resetStuff(lblNewLabel, lblNewLabel_1, lblToday, lblDate);
 	}
 	
 	private void reloadItemLists() {
@@ -321,5 +338,17 @@ public class ToDoManager {
 		for (Item toAdd: ItemListProcessor.getOnGoing(currentDate, current)) {
 			onGoingItemList.addElement(toAdd);
 		}
+	}
+	
+	private void resetStuff(JLabel detailsTitle, JLabel details, JLabel today, JLabel date) {
+		detailsTitle.setText("");
+		details.setText("");
+		int diff = ItemListProcessor.dateDifference(currentDate, ItemListProcessor.getTodayDate());
+		if (diff == 0) today.setText("Today");
+		else if (diff == 1) today.setText("Tomorrow");
+		else today.setText("Future");
+		int[] YMD = ItemListProcessor.getYMD(currentDate);
+		DecimalFormat fmt = new DecimalFormat("00");
+		date.setText(YMD[0] + "/" + fmt.format(YMD[1]) + "/" + fmt.format(YMD[2]));
 	}
 }
