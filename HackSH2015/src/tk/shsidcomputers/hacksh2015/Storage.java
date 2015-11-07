@@ -6,11 +6,12 @@ import java.io.PrintWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class Storage extends HashSet<Item>{
+public class Storage extends HashSet<Item> {
 	private static final long serialVersionUID = 4680889975419391629L;
 	private final File file;
+	private boolean storing = true;
 	
-	public Storage(File file) throws IOException{
+	public Storage(File file) throws IOException {
 		this.file = file;
 		Scanner reader = new Scanner(file);
 		while (reader.hasNextLine()) {
@@ -19,7 +20,8 @@ public class Storage extends HashSet<Item>{
 		reader.close();
 	}
 	
-	public synchronized void store() throws IOException{
+	public synchronized void store() throws IOException {
+		if (!storing) return;
 		if (!file.delete()) throw new IOException();
 		file.createNewFile();
 		PrintWriter writer = new PrintWriter(file);
@@ -27,6 +29,10 @@ public class Storage extends HashSet<Item>{
 			writer.println(toWrite.toJSON());
 		}
 		writer.close();
+	}
+	
+	protected void stopStoring() {
+		storing = false;
 	}
 	
 }
