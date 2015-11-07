@@ -1,9 +1,9 @@
 package tk.shsidcomputers.hacksh2015;
 
-import java.util.HashSet;
 import java.io.File;
-import java.io.PrintWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class Storage extends HashSet<Item> {
