@@ -298,10 +298,10 @@ public class ToDoManager {
 		lblNewLabel_1.setBounds(40, 454, 425, 99);
 		frame.getContentPane().add(lblNewLabel_1);
 		
-		JButton btnNewButton = new JButton("Edit");
-		btnNewButton.setFont(new Font("Dialog", Font.PLAIN, 18));
-		btnNewButton.setBounds(490, 269, 70, 55);
-		frame.getContentPane().add(btnNewButton);
+		JButton btnEdit = new JButton("Edit");
+		btnEdit.setFont(new Font("Dialog", Font.PLAIN, 18));
+		btnEdit.setBounds(490, 269, 70, 55);
+		frame.getContentPane().add(btnEdit);
 	}
 	
 	private void reloadItemLists() {
