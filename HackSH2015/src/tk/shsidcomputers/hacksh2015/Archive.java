@@ -25,6 +25,7 @@ public class Archive extends JFrame {
 	 * Create the frame.
 	 */
 	public Archive(Storage archived) {
+		setTitle("View archive");
 		final DefaultListModel<Item> archivedList = new DefaultListModel<>();
 		this.archived = archived;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
