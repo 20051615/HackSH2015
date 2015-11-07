@@ -2,8 +2,12 @@ package tk.shsidcomputers.hacksh2015;
 
 import java.util.Date;
 
-public class Item {
-	private String title, desc;
+/**
+ * @author SHSIDComputerClub
+ * Note: this class has a natural ordering that is inconsistent with equals.
+ */
+public class Item implements Comparable<Item>{
+	private String title, details;
 	private Date mustStartDate, dueDate;
 	private boolean isDone;
 	private Priority priority;
@@ -11,6 +15,10 @@ public class Item {
 	public Item(String title, Date date) {
 		this.title = title;
 		dueDate = date;
+	}
+	
+	public int compareTo(Item otherItem) {
+		return priority.ordinal() - otherItem.priority.ordinal();
 	}
 	
 	public String getTitle() {
@@ -21,12 +29,12 @@ public class Item {
 		this.title = title;
 	}
 
-	public String getDesc() {
-		return desc;
+	public String getDetails() {
+		return details;
 	}
 
-	public void setDesc(String desc) {
-		this.desc = desc;
+	public void setDetails(String details) {
+		this.details = details;
 	}
 	
 	public Date getDue() {
