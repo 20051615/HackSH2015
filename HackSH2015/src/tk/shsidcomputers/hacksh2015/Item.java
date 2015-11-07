@@ -79,7 +79,7 @@ public class Item implements Comparable<Item> {
 	}
 	
 	public Date getStartDate() {
-		return hasStartDate() ? (Date) dueDate.clone() : null;
+		return hasStartDate() ? (Date) mustStartDate.clone() : null;
 	}
 	
 	public void setStartDate(long newTime) {
