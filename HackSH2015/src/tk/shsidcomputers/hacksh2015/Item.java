@@ -2,17 +2,15 @@ package tk.shsidcomputers.hacksh2015;
 
 import java.util.Date;
 
-public abstract class Item {
+public class Item {
 	private String title, desc;
-	private Object attachment;
-	private Date startdate, enddate;
-	private boolean isdone;
+	private Date dueDate;
+	private boolean isDone;
 	private Priority priority;
 	
 	public Item(String title, Date date) {
 		this.title = title;
-		startdate = date;
-		enddate = date;
+		dueDate = date;
 	}
 	
 	public String getTitle() {
@@ -30,39 +28,27 @@ public abstract class Item {
 	public void setDesc(String desc) {
 		this.desc = desc;
 	}
-
-	public Object getAttachment() {
-		return attachment;
+	
+	public Date getDue() {
+		return (Date) dueDate.clone();
+	}
+	
+	public void setDue(long time) {
+		dueDate.setTime(time);
 	}
 
-	public void setAttachment(Object attachment) {
-		this.attachment = attachment;
+	public void finished() {
+		isDone = true;
 	}
 
-	public Date getStartdate() {
-		return startdate;
+	public void unfinished() {
+		isDone = false;
 	}
-
-	public void setStartdate(Date startdate) {
-		this.startdate = startdate;
+	
+	public boolean isFinished() {
+		return isDone;
 	}
-
-	public Date getEnddate() {
-		return enddate;
-	}
-
-	public void setEnddate(Date enddate) {
-		this.enddate = enddate;
-	}
-
-	public boolean isIsdone() {
-		return isdone;
-	}
-
-	public void setIsdone(boolean isdone) {
-		this.isdone = isdone;
-	}
-
+	
 	public Priority getPriority() {
 		return priority;
 	}
