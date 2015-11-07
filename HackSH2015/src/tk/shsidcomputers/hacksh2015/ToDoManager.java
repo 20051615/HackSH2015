@@ -8,13 +8,17 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 
 public class ToDoManager {
 
@@ -22,6 +26,9 @@ public class ToDoManager {
 	private Storage current;
 	private Storage archived;
 	private Thread storer;
+	private Date currentDate;
+	private ListModel<Item> dueItemList;
+	private ListModel<Item> onGoingItemList;
 	
 	private class Storer implements Runnable {
 		@Override
@@ -110,7 +117,10 @@ public class ToDoManager {
 	public ToDoManager(File currentfile, File archivefile) throws IOException {
 		current = new Storage(currentfile);
 		archived = new Storage(archivefile);
+		currentDate = ItemListProcessor.getTodayDate();
+		
 		initialize();
+		
 		storer = new Thread(new Storer());
 		storer.start();
 	}
@@ -176,6 +186,7 @@ public class ToDoManager {
 		frame.getContentPane().add(scrollPane);
 		
 		JList listDue = new JList();
+		listDue.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listDue.setFont(new Font("Dialog", Font.PLAIN, 18));
 		scrollPane.setViewportView(listDue);
 		
@@ -184,10 +195,12 @@ public class ToDoManager {
 		frame.getContentPane().add(scrollPane_1);
 		
 		JList listOnGoing = new JList();
+		listOnGoing.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listOnGoing.setFont(new Font("Dialog", Font.PLAIN, 18));
 		scrollPane_1.setViewportView(listOnGoing);
 		
 		JButton btnCheck = new JButton("\u2713");
+		btnCheck.setEnabled(false);
 		btnCheck.setFont(new Font("Dialog", Font.PLAIN, 40));
 		btnCheck.setBounds(131, 113, 63, 55);
 		frame.getContentPane().add(btnCheck);

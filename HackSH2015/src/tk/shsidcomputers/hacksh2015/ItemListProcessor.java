@@ -28,14 +28,30 @@ final class ItemListProcessor {
 		return OnGoing;
 	}
 	
-	public static int dateDifference(Date date1, Date date2) {
-		return (int) ((date1.getTime() - date2.getTime()) / (1000 * 3600 * 24));
+	static int dateDifference(Date date1, Date date2) {
+		return (int) Math.round(((double)
+				(date1.getTime() - date2.getTime() + 500) / (1000 * 3600 * 24)));
 	}
 	
-	public static Date getDayStartDate(int year, int month, int day) {
+	static Date getDayStartDate(int year, int month, int day) {
 		Calendar temp = Calendar.getInstance();
 		temp.clear();
-		temp.set(year, month, day);
+		temp.set(year, month - 1, day);
 		return temp.getTime();
 	}
+	
+	static Date getTodayDate() {
+		Calendar now = Calendar.getInstance();
+		int year = now.get(Calendar.YEAR);
+		int month = now.get(Calendar.MONTH);
+		int day = now.get(Calendar.DAY_OF_MONTH);
+		now.clear();
+		now.set(year, month, day);
+		return now.getTime();
+	}
+	
+	static Date getNextDate(Date current) {
+		return new Date(current.getTime() + 24 * 3600000);
+	}
+	
 }
