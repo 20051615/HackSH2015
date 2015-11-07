@@ -2,21 +2,29 @@ package tk.shsidcomputers.hacksh2015;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
 import java.awt.Font;
-import javax.swing.SwingConstants;
-import javax.swing.JTextField;
-import javax.swing.JScrollPane;
-import javax.swing.JComboBox;
+
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Date;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class Input extends JDialog {
 
+	private static final long serialVersionUID = 3816330566947754829L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtTitle;
 	private JTextField txtDueMonth;
@@ -26,6 +34,10 @@ public class Input extends JDialog {
 	private JTextField txtStYear;
 	private JTextField txtStDay;
 	private JTextField txtDesc;
+	JComboBox<Priority> cmbPriority;
+	private boolean stChanged = false;
+	private boolean done = false;
+	private Item value;
 
 	/**
 	 * Launch the application.
@@ -40,10 +52,54 @@ public class Input extends JDialog {
 		}
 	}
 
+	public Item getValue() throws InterruptedException {
+		while (true) {
+			if (done)
+				break;
+			Thread.sleep(10);
+		}
+		dispose();
+		return value;
+	}
+	
+	private void setValueAndExit(boolean b) {
+		if (!b)
+			value = null;
+		else {
+			String title = txtTitle.getText();
+			String details = txtDesc.getText();
+			Date dueDate = ItemListProcessor.getDayStartDate(
+					Integer.parseInt(txtDueYear.getText()),
+					Integer.parseInt(txtDueMonth.getText()),
+					Integer.parseInt(txtDueDay.getText())
+			);
+			Date mustStartDate = ItemListProcessor.getDayStartDate(
+					Integer.parseInt(txtStYear.getText()),
+					Integer.parseInt(txtStMonth.getText()),
+					Integer.parseInt(txtStDay.getText())
+			);
+			if (mustStartDate.equals(dueDate))
+				mustStartDate = null;
+			Priority priority = (Priority) cmbPriority.getSelectedItem();
+			value = new Item(title, details, mustStartDate, dueDate, false, priority);
+		}
+		setVisible(false);
+		done = true;
+	}
+	
 	/**
 	 * Create the dialog.
 	 */
 	public Input() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				setValueAndExit(false);
+			}
+		});
+		setTitle("New Item...");
+		int[] tomorrow = ItemListProcessor.getYMD(
+				ItemListProcessor.getNextDate(ItemListProcessor.getTodayDate()));
 		setBounds(100, 100, 450, 500);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -78,23 +134,37 @@ public class Input extends JDialog {
 		{
 			JLabel label = new JLabel(" Due Date");
 			label.setFont(new Font("Dialog", Font.PLAIN, 18));
-			label.setBounds(45, 133, 81, 21);
+			label.setBounds(45, 133, 138, 21);
 			contentPanel.add(label);
 		}
 		{
 			txtDueMonth = new JTextField();
+			txtDueMonth.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyTyped(KeyEvent e) {
+					if (!stChanged)
+						txtStMonth.setText(txtDueMonth.getText());
+				}
+			});
 			txtDueMonth.setToolTipText("Month");
 			txtDueMonth.setHorizontalAlignment(SwingConstants.CENTER);
 			txtDueMonth.setFont(new Font("Dialog", Font.PLAIN, 18));
-			txtDueMonth.setText("12");
+			txtDueMonth.setText(Integer.toString(tomorrow[1]));
 			txtDueMonth.setColumns(10);
 			txtDueMonth.setBounds(45, 153, 30, 37);
 			contentPanel.add(txtDueMonth);
 		}
 		{
 			txtDueYear = new JTextField();
+			txtDueYear.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyTyped(KeyEvent e) {
+					if (!stChanged)
+						txtStYear.setText(txtDueYear.getText());
+				}
+			});
 			txtDueYear.setToolTipText("Year");
-			txtDueYear.setText("1999");
+			txtDueYear.setText(Integer.toString(tomorrow[0]));
 			txtDueYear.setFont(new Font("Dialog", Font.PLAIN, 18));
 			txtDueYear.setColumns(10);
 			txtDueYear.setBounds(135, 153, 48, 37);
@@ -108,8 +178,15 @@ public class Input extends JDialog {
 		}
 		{
 			txtDueDay = new JTextField();
+			txtDueDay.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyTyped(KeyEvent e) {
+					if (!stChanged)
+						txtStDay.setText(txtDueDay.getText());
+				}
+			});
 			txtDueDay.setToolTipText("Day");
-			txtDueDay.setText("31");
+			txtDueDay.setText(Integer.toString(tomorrow[2]));
 			txtDueDay.setHorizontalAlignment(SwingConstants.CENTER);
 			txtDueDay.setFont(new Font("Dialog", Font.PLAIN, 18));
 			txtDueDay.setColumns(10);
@@ -123,15 +200,21 @@ public class Input extends JDialog {
 			contentPanel.add(label);
 		}
 		{
-			JLabel lblStartDate = new JLabel("Start Date");
+			JLabel lblStartDate = new JLabel(" Start Date");
 			lblStartDate.setFont(new Font("Dialog", Font.PLAIN, 18));
-			lblStartDate.setBounds(249, 133, 81, 21);
+			lblStartDate.setBounds(249, 133, 136, 21);
 			contentPanel.add(lblStartDate);
 		}
 		{
 			txtStMonth = new JTextField();
+			txtStMonth.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyTyped(KeyEvent e) {
+					stChanged = true;
+				}
+			});
 			txtStMonth.setToolTipText("Month");
-			txtStMonth.setText("1");
+			txtStMonth.setText(Integer.toString(tomorrow[1]));
 			txtStMonth.setHorizontalAlignment(SwingConstants.CENTER);
 			txtStMonth.setFont(new Font("Dialog", Font.PLAIN, 18));
 			txtStMonth.setColumns(10);
@@ -140,8 +223,14 @@ public class Input extends JDialog {
 		}
 		{
 			txtStYear = new JTextField();
+			txtStYear.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyTyped(KeyEvent e) {
+					stChanged = true;
+				}
+			});
 			txtStYear.setToolTipText("Year");
-			txtStYear.setText("1999");
+			txtStYear.setText(Integer.toString(tomorrow[0]));
 			txtStYear.setFont(new Font("Dialog", Font.PLAIN, 18));
 			txtStYear.setColumns(10);
 			txtStYear.setBounds(339, 153, 48, 37);
@@ -155,8 +244,14 @@ public class Input extends JDialog {
 		}
 		{
 			txtStDay = new JTextField();
+			txtStDay.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyTyped(KeyEvent e) {
+					stChanged = true;
+				}
+			});
 			txtStDay.setToolTipText("Day");
-			txtStDay.setText("1");
+			txtStDay.setText(Integer.toString(tomorrow[2]));
 			txtStDay.setHorizontalAlignment(SwingConstants.CENTER);
 			txtStDay.setFont(new Font("Dialog", Font.PLAIN, 18));
 			txtStDay.setColumns(10);
@@ -187,9 +282,9 @@ public class Input extends JDialog {
 			}
 		}
 		
-		JComboBox cmbPriority = new JComboBox();
+		cmbPriority = new JComboBox<Priority>();
 		cmbPriority.setToolTipText("Select priority");
-		cmbPriority.setModel(new DefaultComboBoxModel(Priority.values()));
+		cmbPriority.setModel(new DefaultComboBoxModel<Priority>(Priority.values()));
 		cmbPriority.setSelectedIndex(1);
 		cmbPriority.setFont(new Font("Dialog", Font.PLAIN, 18));
 		cmbPriority.setBounds(249, 84, 138, 31);
@@ -200,12 +295,24 @@ public class Input extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("OK");
+				okButton.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						setValueAndExit(true);
+					}
+				});
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						setValueAndExit(false);
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
