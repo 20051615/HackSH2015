@@ -22,6 +22,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.JTextArea;
+import java.awt.Color;
+import javax.swing.UIManager;
+import javax.swing.ScrollPaneConstants;
 
 public class ToDoManager {
 
@@ -167,6 +171,17 @@ public class ToDoManager {
 		frame.getContentPane().setLayout(null);
 		frame.getContentPane().add(btnBack);
 		
+		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setBorder(null);
+		scrollPane_2.setBounds(40, 454, 425, 99);
+		frame.getContentPane().add(scrollPane_2);
+		
+		final JTextArea lblNewLabel_1 = new JTextArea();
+		lblNewLabel_1.setEditable(false);
+		lblNewLabel_1.setFont(new Font("Dialog", Font.PLAIN, 18));
+		lblNewLabel_1.setBackground(UIManager.getColor("InternalFrame.minimizeIconBackground"));
+		scrollPane_2.setViewportView(lblNewLabel_1);
+		
 		final JLabel lblToday = new JLabel("Today");
 		lblToday.setBounds(183, 28, 107, 50);
 		lblToday.setFont(new Font("Dialog", Font.PLAIN, 20));
@@ -181,12 +196,6 @@ public class ToDoManager {
 		lblNewLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
 		lblNewLabel.setBounds(40, 426, 107, 21);
 		frame.getContentPane().add(lblNewLabel);
-		
-		final JLabel lblNewLabel_1 = new JLabel("");
-		lblNewLabel_1.setFont(new Font("Dialog", Font.PLAIN, 18));
-		lblNewLabel_1.setVerticalAlignment(SwingConstants.TOP);
-		lblNewLabel_1.setBounds(40, 454, 425, 99);
-		frame.getContentPane().add(lblNewLabel_1);
 		
 		JButton btnTmrw = new JButton(">");
 		btnTmrw.setBounds(490, 33, 70, 45);
@@ -230,16 +239,11 @@ public class ToDoManager {
 		frame.getContentPane().add(btnCheck);
 		
 		class SharedListSelectionHandler implements ListSelectionListener {			
-			private JButton btnCheck;
 			private JList<Item> thisList, otherList;
-			private JLabel desc, info;
 			
-			SharedListSelectionHandler(JButton btnCheck, JList<Item> otherList, JLabel desc, JLabel info) {
+			SharedListSelectionHandler(JList<Item> otherList) {
 				super();
-				this.btnCheck = btnCheck;
 				this.otherList = otherList;
-				this.desc = desc;
-				this.info = info;
 			}
 			
 			@SuppressWarnings("unchecked")
@@ -249,21 +253,21 @@ public class ToDoManager {
 				if (thisList.isSelectionEmpty()) {
 					btnCheck.setEnabled(false);
 					currentSelected = null;
-					desc.setText("");
-					info.setText("");
+					lblNewLabel.setText("");
+					lblNewLabel_1.setText("");
 				} else {
 					otherList.clearSelection();
 					currentSelected = (Item)(thisList.getSelectedValue());
 					btnCheck.setEnabled(true);
-					desc.setText("Details:");
-					info.setText(currentSelected.getDetails());
+					lblNewLabel.setText("Details:");
+					lblNewLabel_1.setText(currentSelected.getDetails());
 				}
 			}
 		}
 		
 		listDue.clearSelection(); listOnGoing.clearSelection();
-		listDue.addListSelectionListener(new SharedListSelectionHandler(btnCheck, listOnGoing, lblNewLabel, lblNewLabel_1));
-		listOnGoing.addListSelectionListener(new SharedListSelectionHandler(btnCheck, listDue, lblNewLabel, lblNewLabel_1));
+		listDue.addListSelectionListener(new SharedListSelectionHandler(listOnGoing));
+		listOnGoing.addListSelectionListener(new SharedListSelectionHandler(listDue));
 		
 		final JLabel lblDue = new JLabel("Due:");
 		lblDue.setFont(new Font("Dialog", Font.PLAIN, 20));
@@ -333,7 +337,6 @@ public class ToDoManager {
 		btnEdit.setBounds(490, 269, 70, 55);
 		frame.getContentPane().add(btnEdit);
 		
-		resetStuff(lblNewLabel, lblNewLabel_1, lblToday, lblDate);
 	}
 	
 	private void reloadItemLists() {
@@ -347,7 +350,7 @@ public class ToDoManager {
 		}
 	}
 	
-	private void resetStuff(JLabel detailsTitle, JLabel details, JLabel today, JLabel date) {
+	private void resetStuff(JLabel detailsTitle, JTextArea details, JLabel today, JLabel date) {
 		detailsTitle.setText("");
 		details.setText("");
 		int diff = ItemListProcessor.dateDifference(currentDate, ItemListProcessor.getTodayDate());

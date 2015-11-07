@@ -21,6 +21,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JScrollPane;
 
 public class Input extends JDialog {
 	private static final long serialVersionUID = 3816330566947754829L;
@@ -100,6 +101,7 @@ public class Input extends JDialog {
 	}
 	
 	public Input() {
+		setResizable(false);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -280,13 +282,6 @@ public class Input extends JDialog {
 			lblNewLabel_1.setBounds(45, 216, 127, 21);
 			contentPanel.add(lblNewLabel_1);
 		}
-		{
-			txtDesc = new JTextArea();
-			txtDesc.setLineWrap(true);
-			txtDesc.setFont(new Font("Dialog", Font.PLAIN, 18));
-			txtDesc.setBounds(45, 250, 340, 120);
-			contentPanel.add(txtDesc);
-		}
 		
 		cmbPriority = new JComboBox<Priority>();
 		cmbPriority.setToolTipText("Select priority");
@@ -295,6 +290,16 @@ public class Input extends JDialog {
 		cmbPriority.setFont(new Font("Dialog", Font.PLAIN, 18));
 		cmbPriority.setBounds(249, 84, 138, 31);
 		contentPanel.add(cmbPriority);
+		{
+			JScrollPane scrollPane = new JScrollPane();
+			scrollPane.setBounds(45, 250, 340, 120);
+			contentPanel.add(scrollPane);
+			{
+				txtDesc = new JTextArea();
+				scrollPane.setViewportView(txtDesc);
+				txtDesc.setFont(new Font("Dialog", Font.PLAIN, 18));
+			}
+		}
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
