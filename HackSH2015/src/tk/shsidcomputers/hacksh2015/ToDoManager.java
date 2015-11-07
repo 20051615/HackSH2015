@@ -182,6 +182,17 @@ public class ToDoManager {
 		lblDate.setFont(new Font("Dialog", Font.PLAIN, 30));
 		frame.getContentPane().add(lblDate);
 		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
+		lblNewLabel.setBounds(40, 426, 107, 21);
+		frame.getContentPane().add(lblNewLabel);
+		
+		JLabel lblNewLabel_1 = new JLabel("");
+		lblNewLabel_1.setFont(new Font("Dialog", Font.PLAIN, 18));
+		lblNewLabel_1.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_1.setBounds(40, 454, 425, 99);
+		frame.getContentPane().add(lblNewLabel_1);
+		
 		JButton btnTmrw = new JButton(">");
 		btnTmrw.setBounds(490, 33, 70, 45);
 		btnTmrw.setFont(new Font("Dialog", Font.PLAIN, 18));
@@ -225,11 +236,14 @@ public class ToDoManager {
 		class SharedListSelectionHandler implements ListSelectionListener {			
 			private JButton btnCheck;
 			private JList<Item> thisList, otherList;
+			private JLabel desc, info;
 			
-			SharedListSelectionHandler(JButton btnCheck, JList<Item> otherList) {
+			SharedListSelectionHandler(JButton btnCheck, JList<Item> otherList, JLabel desc, JLabel info) {
 				super();
 				this.btnCheck = btnCheck;
 				this.otherList = otherList;
+				this.desc = desc;
+				this.info = info;
 			}
 			
 			@SuppressWarnings("unchecked")
@@ -239,17 +253,21 @@ public class ToDoManager {
 				if (thisList.isSelectionEmpty()) {
 					btnCheck.setEnabled(false);
 					currentSelected = null;
+					desc.setText("");
+					info.setText("");
 				} else {
 					otherList.clearSelection();
 					currentSelected = (Item)(thisList.getSelectedValue());
 					btnCheck.setEnabled(true);
+					desc.setText("Details:");
+					info.setText(currentSelected.getDetails());
 				}
 			}
 		}
 		
 		listDue.clearSelection(); listOnGoing.clearSelection();
-		listDue.addListSelectionListener(new SharedListSelectionHandler(btnCheck, listOnGoing));
-		listOnGoing.addListSelectionListener(new SharedListSelectionHandler(btnCheck, listDue));
+		listDue.addListSelectionListener(new SharedListSelectionHandler(btnCheck, listOnGoing, lblNewLabel, lblNewLabel_1));
+		listOnGoing.addListSelectionListener(new SharedListSelectionHandler(btnCheck, listDue, lblNewLabel, lblNewLabel_1));
 		
 		JLabel lblDue = new JLabel("Due:");
 		lblDue.setFont(new Font("Dialog", Font.PLAIN, 20));
@@ -287,17 +305,6 @@ public class ToDoManager {
 		btnAdd.setFont(new Font("Dialog", Font.PLAIN, 25));
 		btnAdd.setBounds(232, 113, 63, 55);
 		frame.getContentPane().add(btnAdd);
-		
-		JLabel lblNewLabel = new JLabel("Description:");
-		lblNewLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
-		lblNewLabel.setBounds(40, 426, 107, 21);
-		frame.getContentPane().add(lblNewLabel);
-		
-		JLabel lblNewLabel_1 = new JLabel("");
-		lblNewLabel_1.setFont(new Font("Dialog", Font.PLAIN, 18));
-		lblNewLabel_1.setVerticalAlignment(SwingConstants.TOP);
-		lblNewLabel_1.setBounds(40, 454, 425, 99);
-		frame.getContentPane().add(lblNewLabel_1);
 		
 		JButton btnEdit = new JButton("Edit");
 		btnEdit.setFont(new Font("Dialog", Font.PLAIN, 18));
