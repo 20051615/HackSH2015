@@ -276,7 +276,7 @@ public class ToDoManager {
 		
 		JLabel lblOngoing = new JLabel("Ongoing:\r\n");
 		lblOngoing.setFont(new Font("Dialog", Font.PLAIN, 20));
-		lblOngoing.setBounds(40, 345, 91, 30);
+		lblOngoing.setBounds(12, 345, 119, 30);
 		frame.getContentPane().add(lblOngoing);
 		
 		JButton btnCompleted = new JButton("DoneList");
