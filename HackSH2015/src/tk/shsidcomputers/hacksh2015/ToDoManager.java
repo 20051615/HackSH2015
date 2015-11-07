@@ -158,7 +158,7 @@ public class ToDoManager {
 		});
 		
 		frame.setResizable(false);
-		frame.setBounds(100, 100, 600, 500);
+		frame.setBounds(100, 100, 600, 608);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JButton btnBack = new JButton("<<");
@@ -250,19 +250,19 @@ public class ToDoManager {
 		listDue.addListSelectionListener(new SharedListSelectionHandler(btnCheck, listOnGoing));
 		listOnGoing.addListSelectionListener(new SharedListSelectionHandler(btnCheck, listDue));
 		
-		JLabel lblDue = new JLabel("DUE:");
+		JLabel lblDue = new JLabel("Due:");
 		lblDue.setFont(new Font("Dialog", Font.PLAIN, 20));
-		lblDue.setBounds(15, 216, 116, 30);
+		lblDue.setBounds(61, 216, 70, 30);
 		frame.getContentPane().add(lblDue);
 		
-		JLabel lblOngoing = new JLabel("ONGOING:\r\n");
+		JLabel lblOngoing = new JLabel("Ongoing:\r\n");
 		lblOngoing.setFont(new Font("Dialog", Font.PLAIN, 20));
-		lblOngoing.setBounds(15, 345, 116, 30);
+		lblOngoing.setBounds(40, 345, 91, 30);
 		frame.getContentPane().add(lblOngoing);
 		
-		JButton btnCompleted = new JButton("Completed");
+		JButton btnCompleted = new JButton("DoneList");
 		btnCompleted.setFont(new Font("Dialog", Font.PLAIN, 18));
-		btnCompleted.setBounds(342, 113, 123, 55);
+		btnCompleted.setBounds(330, 113, 135, 55);
 		frame.getContentPane().add(btnCompleted);
 		
 		JButton btnAdd = new JButton("+");

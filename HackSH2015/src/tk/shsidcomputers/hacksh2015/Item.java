@@ -26,10 +26,11 @@ public class Item implements Comparable<Item> {
 	@Override
 	public String toString() {
 		if (mustStartDate != null) {
-			return title + " (Due " + ItemListProcessor.getYMD(dueDate)[1] + "/"
+			return priority + ": " + title 
+					+ " (Due " + ItemListProcessor.getYMD(dueDate)[1] + "/"
 					+ ItemListProcessor.getYMD(dueDate)[2] + ")";
 		}
-		return title;
+		return priority + ": " + title;
 	}
 	
 	public int compareTo(Item otherItem) {

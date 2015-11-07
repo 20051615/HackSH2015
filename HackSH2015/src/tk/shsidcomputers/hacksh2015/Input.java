@@ -3,6 +3,13 @@ package tk.shsidcomputers.hacksh2015;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -14,14 +21,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.Date;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.Dialog.ModalityType;
 
 public class Input extends JDialog {
 	private static final long serialVersionUID = 3816330566947754829L;
@@ -211,7 +210,7 @@ public class Input extends JDialog {
 			contentPanel.add(label);
 		}
 		{
-			JLabel lblStartDate = new JLabel(" Start Date");
+			JLabel lblStartDate = new JLabel("Opt: Start Date");
 			lblStartDate.setFont(new Font("Dialog", Font.PLAIN, 18));
 			lblStartDate.setBounds(249, 133, 136, 21);
 			contentPanel.add(lblStartDate);
