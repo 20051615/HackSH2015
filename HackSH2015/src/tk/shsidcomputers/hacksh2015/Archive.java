@@ -1,42 +1,32 @@
 package tk.shsidcomputers.hacksh2015;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JScrollPane;
-import javax.swing.JList;
 import java.awt.Font;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 public class Archive extends JFrame {
-
+	private static final long serialVersionUID = 5540165914513607110L;
 	private JPanel contentPane;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Archive frame = new Archive();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private Storage archived;
 
 	/**
 	 * Create the frame.
 	 */
-	public Archive() {
+	public Archive(Storage archived) {
+		final DefaultListModel<Item> archivedList = new DefaultListModel<>();
+		this.archived = archived;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 500);
 		contentPane = new JPanel();
@@ -48,7 +38,7 @@ public class Archive extends JFrame {
 		scrollPane.setBounds(42, 129, 345, 277);
 		contentPane.add(scrollPane);
 		
-		JList list = new JList();
+		JList<Item> list = new JList<Item>();
 		list.setFont(new Font("Dialog", Font.PLAIN, 18));
 		scrollPane.setViewportView(list);
 		
@@ -59,8 +49,21 @@ public class Archive extends JFrame {
 		contentPane.add(lblArchive);
 		
 		JButton btnClear = new JButton("Clear All");
+		btnClear.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Archive.this.archived.clear();
+				archivedList.clear();
+			}
+		});
 		btnClear.setFont(new Font("Dialog", Font.PLAIN, 18));
 		btnClear.setBounds(42, 69, 123, 45);
 		contentPane.add(btnClear);
+		
+		ArrayList<Item> archivedarray = new ArrayList<Item>(archived);
+		Collections.sort(archivedarray);
+		for (Item i : archivedarray) {
+			archivedList.addElement(i);
+		}
 	}
 }
