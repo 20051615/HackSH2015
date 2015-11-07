@@ -2,6 +2,7 @@ package tk.shsidcomputers.hacksh2015;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +15,7 @@ final class ItemListProcessor {
 			if (dateDifference(processing.getDue(), today) == 1)
 				dueTomorrow.add(processing);
 		}
+		Collections.sort(dueTomorrow);
 		return dueTomorrow;
 	}
 	
@@ -25,6 +27,7 @@ final class ItemListProcessor {
 				dateDifference(processing.getStartDate(), today) <= 0)
 				OnGoing.add(processing);
 		}
+		Collections.sort(OnGoing);
 		return OnGoing;
 	}
 	
