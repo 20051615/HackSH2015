@@ -17,7 +17,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -32,7 +32,7 @@ public class Input extends JDialog {
 	private JTextField txtStMonth;
 	private JTextField txtStYear;
 	private JTextField txtStDay;
-	private JTextField txtDesc;
+	private JTextArea txtDesc;
 	JComboBox<Priority> cmbPriority;
 	private boolean stChanged = false;
 	private Item value;
@@ -281,15 +281,11 @@ public class Input extends JDialog {
 			contentPanel.add(lblNewLabel_1);
 		}
 		{
-			JScrollPane scrollPane = new JScrollPane();
-			scrollPane.setBounds(45, 250, 340, 120);
-			contentPanel.add(scrollPane);
-			{
-				txtDesc = new JTextField();
-				scrollPane.setViewportView(txtDesc);
-				txtDesc.setFont(new Font("Dialog", Font.PLAIN, 18));
-				txtDesc.setColumns(10);
-			}
+			txtDesc = new JTextArea();
+			txtDesc.setLineWrap(true);
+			txtDesc.setFont(new Font("Dialog", Font.PLAIN, 18));
+			txtDesc.setBounds(45, 250, 340, 120);
+			contentPanel.add(txtDesc);
 		}
 		
 		cmbPriority = new JComboBox<Priority>();
