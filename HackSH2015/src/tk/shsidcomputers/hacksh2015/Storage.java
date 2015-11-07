@@ -24,7 +24,7 @@ public class Storage extends HashSet<Item> {
 		file.createNewFile();
 		PrintWriter writer = new PrintWriter(file);
 		for (Item toWrite: this) {
-			writer.println(toWrite);
+			writer.println(toWrite.toJSON());
 		}
 		writer.close();
 	}
