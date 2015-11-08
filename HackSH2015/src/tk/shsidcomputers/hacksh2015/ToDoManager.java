@@ -45,13 +45,10 @@ import javax.swing.event.ListSelectionListener;
  *
  */
 public final class ToDoManager {
-	private JFrame frame;
-	private Storage current;
-	private Storage archived;
+	private final Storage current, archived;
 	private Thread storer;
 	private Date currentDate;
-	private DefaultListModel<Item> dueItemList;
-	private DefaultListModel<Item> onGoingItemList;
+	private final DefaultListModel<Item> dueItemList, onGoingItemList;
 	private Item currentSelected;
 	
 	private class Storer implements Runnable {
@@ -94,7 +91,35 @@ public final class ToDoManager {
 			}
 		}
 	}
-
+	
+	private class ItemSelectHandler implements ListSelectionListener {			
+		private JList<Item> thisList, otherList;
+		
+		ItemSelectHandler(JList<Item> otherList) {
+			super();
+			this.otherList = otherList;
+		}
+		
+		@SuppressWarnings("unchecked")
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			thisList = (JList<Item>)e.getSource();
+			if (thisList.isSelectionEmpty()) {
+				resetComponentsForDeselect();
+			} else {
+				otherList.clearSelection();
+				resetComponentsForSelected(thisList.getSelectedValue());
+			}
+		}
+	}
+	
+	private final JFrame frame;
+	private final JButton btnBack, btnTmrw, btnArchive, btnCheck, btnEdit, btnAdd;
+	private final JLabel lblDue, lblOnGoing, lblToday, lblDate, lblDetailsTitle;
+	private final JScrollPane scrlDetailsText, scrlDue, scrlOnGoing;
+	private final JTextArea txtDetailsText;
+	private final JList<Item> listDue, listOnGoing;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -126,8 +151,8 @@ public final class ToDoManager {
 						}
 					}
 					
-					ToDoManager window = new ToDoManager(current, archived);
-					window.frame.setVisible(true);
+					ToDoManager mainWindow = new ToDoManager(current, archived);
+					mainWindow.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -143,111 +168,83 @@ public final class ToDoManager {
 		current = new Storage(currentfile);
 		archived = new Storage(archivefile);
 		currentDate = ItemListProcessor.getTodayDate();
-		initialize();
-		storer = new Thread(new Storer());
-		storer.start();
-	}
-
-	private void close() {
-		// frame.setVisible(false);
-		try {
-			current.store();
-			archived.store();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		frame.dispose();
-		if (storer != null)
-			storer.interrupt();
-		System.exit(0);
-	}
-	
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
+		
 		dueItemList = new DefaultListModel<>();
 		onGoingItemList = new DefaultListModel<>();
 		reloadItemLists();
+		
 		frame = new JFrame();
 		frame.getContentPane().setFont(new Font("Dialog", Font.PLAIN, 18));
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				close();
+				try {
+					current.store();
+					archived.store();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+				frame.dispose();
+				if (storer != null)
+					storer.interrupt();
+				System.exit(0);
 			}
 		});
-		
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 600, 608);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
 		
-		JButton btnBack = new JButton("<<");
+		btnBack = new JButton("<<");
+		btnBack.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				currentDate = ItemListProcessor.getTodayDate();
+				reloadItemLists();
+				resetComponentsForDate();
+				resetComponentsForDeselect();
+			}
+		});
 		btnBack.setBounds(30, 33, 70, 45);
 		btnBack.setFont(new Font("Dialog", Font.PLAIN, 18));
-		frame.getContentPane().setLayout(null);
 		frame.getContentPane().add(btnBack);
 		
-		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBorder(null);
-		scrollPane_2.setBounds(40, 454, 425, 99);
-		frame.getContentPane().add(scrollPane_2);
-		
-		final JTextArea lblNewLabel_1 = new JTextArea();
-		lblNewLabel_1.setEditable(false);
-		lblNewLabel_1.setFont(new Font("Dialog", Font.PLAIN, 18));
-		lblNewLabel_1.setBackground(UIManager.getColor("InternalFrame.minimizeIconBackground"));
-		scrollPane_2.setViewportView(lblNewLabel_1);
-		
-		final JLabel lblToday = new JLabel("Today");
-		lblToday.setBounds(183, 28, 107, 50);
-		lblToday.setFont(new Font("Dialog", Font.PLAIN, 20));
-		frame.getContentPane().add(lblToday);
-		
-		final JLabel lblDate = new JLabel("--/--/----");
-		lblDate.setBounds(305, 35, 135, 37);
-		lblDate.setFont(new Font("Dialog", Font.PLAIN, 20));
-		frame.getContentPane().add(lblDate);
-		
-		final JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setFont(new Font("Dialog", Font.PLAIN, 20));
-		lblNewLabel.setBounds(40, 426, 107, 21);
-		frame.getContentPane().add(lblNewLabel);
-		
-		JButton btnTmrw = new JButton(">");
+		btnTmrw = new JButton(">");
+		btnTmrw.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				currentDate = ItemListProcessor.getNextDate(currentDate);
+				reloadItemLists();
+				resetComponentsForDate();
+				resetComponentsForDeselect();
+			}
+		});
 		btnTmrw.setBounds(490, 33, 70, 45);
 		btnTmrw.setFont(new Font("Dialog", Font.PLAIN, 18));
 		frame.getContentPane().add(btnTmrw);
 		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(131, 183, 334, 99);
-		frame.getContentPane().add(scrollPane);
+		btnArchive = new JButton("DoneList");
+		btnArchive.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Archive a = new Archive(archived);
+				a.setVisible(true);
+			}
+		});
+		btnArchive.setFont(new Font("Dialog", Font.PLAIN, 18));
+		btnArchive.setBounds(330, 113, 135, 55);
+		frame.getContentPane().add(btnArchive);
 		
-		JList<Item> listDue = new JList<>(dueItemList);
-		listDue.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		listDue.setFont(new Font("Dialog", Font.PLAIN, 18));
-		scrollPane.setViewportView(listDue);
-		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(131, 312, 334, 99);
-		frame.getContentPane().add(scrollPane_1);
-		
-		JList<Item> listOnGoing = new JList<>(onGoingItemList);
-		listOnGoing.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		listOnGoing.setFont(new Font("Dialog", Font.PLAIN, 18));
-		scrollPane_1.setViewportView(listOnGoing);
-		
-		final JButton btnCheck = new JButton("\u2713");
+		btnCheck = new JButton("\u2713");
 		btnCheck.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (currentSelected != null) {
-					current.remove(currentSelected);
-					archived.add(currentSelected);
-					dueItemList.removeElement(currentSelected);
-					onGoingItemList.removeElement(currentSelected);
-					resetStuff(lblNewLabel, lblNewLabel_1, lblToday, lblDate);
-				}
+				current.remove(currentSelected);
+				archived.add(currentSelected);
+				dueItemList.removeElement(currentSelected);
+				onGoingItemList.removeElement(currentSelected);
+				reloadItemLists();
+				resetComponentsForDeselect();
 			}
 		});
 		btnCheck.setEnabled(false);
@@ -255,79 +252,10 @@ public final class ToDoManager {
 		btnCheck.setBounds(131, 113, 63, 55);
 		frame.getContentPane().add(btnCheck);
 		
-		final JLabel lblDue = new JLabel("Due:");
-		lblDue.setFont(new Font("Dialog", Font.PLAIN, 20));
-		lblDue.setBounds(30, 216, 101, 30);
-		frame.getContentPane().add(lblDue);
-		
-		final JLabel lblOngoing = new JLabel("Ongoing:");
-		lblOngoing.setFont(new Font("Dialog", Font.PLAIN, 20));
-		lblOngoing.setBounds(12, 345, 119, 30);
-		frame.getContentPane().add(lblOngoing);
-		
-		JButton btnCompleted = new JButton("DoneList");
-		btnCompleted.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				Archive a = new Archive(archived);
-				a.setVisible(true);
-			}
-		});
-		btnCompleted.setFont(new Font("Dialog", Font.PLAIN, 18));
-		btnCompleted.setBounds(330, 113, 135, 55);
-		frame.getContentPane().add(btnCompleted);
-		
-		JButton btnAdd = new JButton("+");
-		btnAdd.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				Input input = new Input();
-				input.setVisible(true);
-				Item toAdd;
-				try {
-					toAdd = input.getValue();
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-					return;
-				}
-				if (toAdd == null) return;
-				current.add(toAdd);
-				reloadItemLists();
-				resetStuff(lblNewLabel, lblNewLabel_1, lblToday, lblDate);
-			}
-		});
-		btnAdd.setFont(new Font("Dialog", Font.PLAIN, 25));
-		btnAdd.setBounds(232, 113, 63, 55);
-		frame.getContentPane().add(btnAdd);
-		
-		btnBack.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				currentDate = ItemListProcessor.getTodayDate();
-				reloadItemLists();
-				resetStuff(lblNewLabel, lblNewLabel_1, lblToday, lblDate);
-			}
-		});
-		
-		btnTmrw.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				currentDate = ItemListProcessor.getNextDate(currentDate);
-				reloadItemLists();
-				resetStuff(lblNewLabel, lblNewLabel_1, lblToday, lblDate);
-			}
-		});
-		
-		final JButton btnEdit = new JButton("Edit");
-		btnEdit.setEnabled(false);
-		btnEdit.setFont(new Font("Dialog", Font.PLAIN, 18));
-		btnEdit.setBounds(490, 269, 70, 55);
-		frame.getContentPane().add(btnEdit);
-		
+		btnEdit = new JButton("Edit");
 		btnEdit.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (currentSelected == null) return;
 				Item beingChanged = currentSelected;
 				Input input = new Input(beingChanged);
 				input.setVisible(true);
@@ -344,46 +272,98 @@ public final class ToDoManager {
 				onGoingItemList.removeElement(beingChanged);
 				current.add(toAdd);
 				reloadItemLists();
-				resetStuff(lblNewLabel, lblNewLabel_1, lblToday, lblDate);
-				currentSelected = null;
-				btnCheck.setEnabled(false);
+				resetComponentsForDeselect();
 			}
 		});
+		btnEdit.setEnabled(false);
+		btnEdit.setFont(new Font("Dialog", Font.PLAIN, 18));
+		btnEdit.setBounds(490, 269, 70, 55);
+		frame.getContentPane().add(btnEdit);
 		
-		class SharedListSelectionHandler implements ListSelectionListener {			
-			private JList<Item> thisList, otherList;
-			
-			SharedListSelectionHandler(JList<Item> otherList) {
-				super();
-				this.otherList = otherList;
-			}
-			
-			@SuppressWarnings("unchecked")
+		btnAdd = new JButton("+");
+		btnAdd.addMouseListener(new MouseAdapter() {
 			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				thisList = (JList<Item>)e.getSource();
-				if (thisList.isSelectionEmpty()) {
-					btnCheck.setEnabled(false);
-					btnEdit.setEnabled(false);
-					currentSelected = null;
-					lblNewLabel.setText("");
-					lblNewLabel_1.setText("");
-				} else {
-					otherList.clearSelection();
-					currentSelected = (thisList.getSelectedValue());
-					btnCheck.setEnabled(true);
-					btnEdit.setEnabled(true);
-					lblNewLabel.setText("Details:");
-					lblNewLabel_1.setText(currentSelected.getDetails());
+			public void mouseClicked(MouseEvent e) {
+				Input input = new Input();
+				input.setVisible(true);
+				Item toAdd;
+				try {
+					toAdd = input.getValue();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+					return;
 				}
+				if (toAdd == null) return;
+				current.add(toAdd);
+				reloadItemLists();
+				resetComponentsForDeselect();
 			}
-		}
+		});
+		btnAdd.setFont(new Font("Dialog", Font.PLAIN, 25));
+		btnAdd.setBounds(232, 113, 63, 55);
+		frame.getContentPane().add(btnAdd);
 		
-		listDue.clearSelection(); listOnGoing.clearSelection();
-		listDue.addListSelectionListener(new SharedListSelectionHandler(listOnGoing));
-		listOnGoing.addListSelectionListener(new SharedListSelectionHandler(listDue));
+		lblDue = new JLabel("Due:");
+		lblDue.setFont(new Font("Dialog", Font.PLAIN, 20));
+		lblDue.setBounds(30, 216, 101, 30);
+		frame.getContentPane().add(lblDue);
 		
-		resetStuff(lblNewLabel, lblNewLabel_1, lblToday, lblDate);
+		lblOnGoing = new JLabel("Ongoing:");
+		lblOnGoing.setFont(new Font("Dialog", Font.PLAIN, 20));
+		lblOnGoing.setBounds(12, 345, 119, 30);
+		frame.getContentPane().add(lblOnGoing);
+		
+		lblToday = new JLabel("");
+		lblToday.setBounds(183, 28, 107, 50);
+		lblToday.setFont(new Font("Dialog", Font.PLAIN, 20));
+		frame.getContentPane().add(lblToday);
+		
+		lblDate = new JLabel("");
+		lblDate.setBounds(305, 35, 135, 37);
+		lblDate.setFont(new Font("Dialog", Font.PLAIN, 20));
+		frame.getContentPane().add(lblDate);
+		
+		resetComponentsForDate();
+		
+		lblDetailsTitle = new JLabel("");
+		lblDetailsTitle.setFont(new Font("Dialog", Font.PLAIN, 20));
+		lblDetailsTitle.setBounds(40, 426, 107, 21);
+		frame.getContentPane().add(lblDetailsTitle);
+		
+		scrlDetailsText = new JScrollPane();
+		scrlDetailsText.setBorder(null);
+		scrlDetailsText.setBounds(40, 454, 425, 99);
+		frame.getContentPane().add(scrlDetailsText);
+		
+		txtDetailsText = new JTextArea();
+		txtDetailsText.setEditable(false);
+		txtDetailsText.setFont(new Font("Dialog", Font.PLAIN, 18));
+		txtDetailsText.setBackground(UIManager.getColor("InternalFrame.minimizeIconBackground"));
+		scrlDetailsText.setViewportView(txtDetailsText);
+		
+		scrlDue = new JScrollPane();
+		scrlDue.setBounds(131, 183, 334, 99);
+		frame.getContentPane().add(scrlDue);
+		
+		listDue = new JList<>(dueItemList);
+		listDue.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		listDue.setFont(new Font("Dialog", Font.PLAIN, 18));
+		scrlDue.setViewportView(listDue);
+		
+		scrlOnGoing = new JScrollPane();
+		scrlOnGoing.setBounds(131, 312, 334, 99);
+		frame.getContentPane().add(scrlOnGoing);
+		
+		listOnGoing = new JList<>(onGoingItemList);
+		listOnGoing.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		listOnGoing.setFont(new Font("Dialog", Font.PLAIN, 18));
+		scrlOnGoing.setViewportView(listOnGoing);
+		
+		listDue.addListSelectionListener(new ItemSelectHandler(listOnGoing));
+		listOnGoing.addListSelectionListener(new ItemSelectHandler(listDue));
+				
+		storer = new Thread(new Storer());
+		storer.start();
 	}
 	
 	private void reloadItemLists() {
@@ -396,16 +376,31 @@ public final class ToDoManager {
 			onGoingItemList.addElement(toAdd);
 		}
 	}
+
+	private void resetComponentsForSelected(Item newSelect) {
+		currentSelected = newSelect;
+		btnCheck.setEnabled(true);
+		btnEdit.setEnabled(true);
+		lblDetailsTitle.setText("Details:");
+		txtDetailsText.setText(currentSelected.getDetails());
+	}
 	
-	private void resetStuff(JLabel detailsTitle, JTextArea details, JLabel today, JLabel date) {
-		detailsTitle.setText("");
-		details.setText("");
+	private void resetComponentsForDeselect() {
+		currentSelected = null;
+		btnCheck.setEnabled(false);
+		btnEdit.setEnabled(false);
+		lblDetailsTitle.setText("");
+		txtDetailsText.setText("");
+	}
+	
+	private void resetComponentsForDate() {
 		int diff = ItemListProcessor.dateDifference(currentDate, ItemListProcessor.getTodayDate());
-		if (diff == 0) today.setText("Today");
-		else if (diff == 1) today.setText("Tomorrow");
-		else today.setText("Future");
+		if (diff == 0) lblToday.setText("Today");
+		else if (diff == 1) lblToday.setText("Tomorrow");
+		else lblToday.setText("Future");
 		int[] YMD = ItemListProcessor.getYMD(currentDate);
 		DecimalFormat fmt = new DecimalFormat("00");
-		date.setText(YMD[0] + "/" + fmt.format(YMD[1]) + "/" + fmt.format(YMD[2]));
+		lblDate.setText(YMD[0] + "/" + fmt.format(YMD[1]) + "/" + fmt.format(YMD[2]));
 	}
+	
 }
