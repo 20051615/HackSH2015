@@ -37,14 +37,14 @@ import javax.swing.border.EmptyBorder;
  * @author SHSIDComputerClub
  *
  */
-public class Archive extends JFrame {
+final class Archive extends JFrame {
 	private static final long serialVersionUID = 5540165914513607110L;
 	private JPanel contentPane;
 
 	/**
 	 * Create the frame.
 	 */
-	public Archive(final Storage archived) {
+	Archive(final Storage archived) {
 		setTitle("View archive");
 		final DefaultListModel<Item> archivedList = new DefaultListModel<>();
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

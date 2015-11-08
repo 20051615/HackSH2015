@@ -44,7 +44,7 @@ import javax.swing.JScrollPane;
  * @author SHSIDComputerClub
  *
  */
-public class Input extends JDialog {
+final class Input extends JDialog {
 	private static final long serialVersionUID = 3816330566947754829L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtTitle;
@@ -55,7 +55,7 @@ public class Input extends JDialog {
 	private JTextField txtStYear;
 	private JTextField txtStDay;
 	private JTextArea txtDesc;
-	JComboBox<Priority> cmbPriority;
+	private JComboBox<Priority> cmbPriority;
 	private boolean stChanged = false;
 	private Item value;
 
@@ -72,7 +72,7 @@ public class Input extends JDialog {
 		}
 	}
 
-	public Item getValue() throws InterruptedException {
+	Item getValue() throws InterruptedException {
 
 		dispose();
 		return value;
@@ -95,8 +95,7 @@ public class Input extends JDialog {
 			if (mustStartDate.equals(dueDate))
 				mustStartDate = null;
 			Priority priority = (Priority) cmbPriority.getSelectedItem();
-			value = new Item(title, details, mustStartDate, dueDate,
-					value == null ? false : value.isFinished(), priority);
+			value = new Item(title, details, mustStartDate, dueDate, priority);
 		}
 		setVisible(false);
 	}
@@ -104,7 +103,7 @@ public class Input extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public Input(Item value) {
+	Input(Item value) {
 		this();
 		this.value = value;
 		txtTitle.setText(value.getTitle());
@@ -121,7 +120,7 @@ public class Input extends JDialog {
 		cmbPriority.setSelectedItem(value.getPriority());
 	}
 	
-	public Input() {
+	Input() {
 		setResizable(false);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		addWindowListener(new WindowAdapter() {

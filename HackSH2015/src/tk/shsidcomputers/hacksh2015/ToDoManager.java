@@ -44,7 +44,7 @@ import javax.swing.event.ListSelectionListener;
  * @author SHSIDComputerClub
  *
  */
-public class ToDoManager {
+public final class ToDoManager {
 	private JFrame frame;
 	private Storage current;
 	private Storage archived;

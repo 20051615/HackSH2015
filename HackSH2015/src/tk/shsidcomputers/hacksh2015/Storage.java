@@ -26,12 +26,12 @@ import java.util.Scanner;
  * @author SHSIDComputerClub
  *
  */
-public class Storage extends HashSet<Item> {
+final class Storage extends HashSet<Item> {
 	private static final long serialVersionUID = 4680889975419391629L;
 	private final File file;
 	private boolean storing = true;
 	
-	public Storage(File file) throws IOException {
+	Storage(File file) throws IOException {
 		this.file = file;
 		Scanner reader = new Scanner(file);
 		while (reader.hasNextLine()) {
@@ -40,7 +40,7 @@ public class Storage extends HashSet<Item> {
 		reader.close();
 	}
 	
-	public synchronized void store() throws IOException {
+	synchronized void store() throws IOException {
 		if (!storing) return;
 		if (!file.delete()) throw new IOException();
 		file.createNewFile();
@@ -51,7 +51,7 @@ public class Storage extends HashSet<Item> {
 		writer.close();
 	}
 	
-	protected void stopStoring() {
+	void stopStoring() {
 		storing = false;
 	}
 	
