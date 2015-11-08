@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2015 SHSIDComputerClub
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package tk.shsidcomputers.hacksh2015;
 
 import java.awt.Font;
@@ -14,8 +30,13 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
+/**
+ * @author SHSIDComputerClub
+ *
+ */
 public class Archive extends JFrame {
 	private static final long serialVersionUID = 5540165914513607110L;
 	private JPanel contentPane;
@@ -26,7 +47,7 @@ public class Archive extends JFrame {
 	public Archive(final Storage archived) {
 		setTitle("View archive");
 		final DefaultListModel<Item> archivedList = new DefaultListModel<>();
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 500);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
