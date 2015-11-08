@@ -130,7 +130,7 @@ public class Input extends JDialog {
 				setValueAndExit(false);
 			}
 		});
-		setTitle("New Item...");
+		setTitle("Edit Parameters");
 		int[] tomorrow = ItemListProcessor.getYMD(
 				ItemListProcessor.getNextDate(ItemListProcessor.getTodayDate()));
 		setBounds(100, 100, 450, 500);

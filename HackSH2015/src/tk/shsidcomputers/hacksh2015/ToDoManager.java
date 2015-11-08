@@ -255,37 +255,6 @@ public class ToDoManager {
 		btnCheck.setBounds(131, 113, 63, 55);
 		frame.getContentPane().add(btnCheck);
 		
-		class SharedListSelectionHandler implements ListSelectionListener {			
-			private JList<Item> thisList, otherList;
-			
-			SharedListSelectionHandler(JList<Item> otherList) {
-				super();
-				this.otherList = otherList;
-			}
-			
-			@SuppressWarnings("unchecked")
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				thisList = (JList<Item>)e.getSource();
-				if (thisList.isSelectionEmpty()) {
-					btnCheck.setEnabled(false);
-					currentSelected = null;
-					lblNewLabel.setText("");
-					lblNewLabel_1.setText("");
-				} else {
-					otherList.clearSelection();
-					currentSelected = (thisList.getSelectedValue());
-					btnCheck.setEnabled(true);
-					lblNewLabel.setText("Details:");
-					lblNewLabel_1.setText(currentSelected.getDetails());
-				}
-			}
-		}
-		
-		listDue.clearSelection(); listOnGoing.clearSelection();
-		listDue.addListSelectionListener(new SharedListSelectionHandler(listOnGoing));
-		listOnGoing.addListSelectionListener(new SharedListSelectionHandler(listDue));
-		
 		final JLabel lblDue = new JLabel("Due:");
 		lblDue.setFont(new Font("Dialog", Font.PLAIN, 20));
 		lblDue.setBounds(30, 216, 101, 30);
@@ -349,7 +318,8 @@ public class ToDoManager {
 			}
 		});
 		
-		JButton btnEdit = new JButton("Edit");
+		final JButton btnEdit = new JButton("Edit");
+		btnEdit.setEnabled(false);
 		btnEdit.setFont(new Font("Dialog", Font.PLAIN, 18));
 		btnEdit.setBounds(490, 269, 70, 55);
 		frame.getContentPane().add(btnEdit);
@@ -379,6 +349,40 @@ public class ToDoManager {
 				btnCheck.setEnabled(false);
 			}
 		});
+		
+		class SharedListSelectionHandler implements ListSelectionListener {			
+			private JList<Item> thisList, otherList;
+			
+			SharedListSelectionHandler(JList<Item> otherList) {
+				super();
+				this.otherList = otherList;
+			}
+			
+			@SuppressWarnings("unchecked")
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				thisList = (JList<Item>)e.getSource();
+				if (thisList.isSelectionEmpty()) {
+					btnCheck.setEnabled(false);
+					btnEdit.setEnabled(false);
+					currentSelected = null;
+					lblNewLabel.setText("");
+					lblNewLabel_1.setText("");
+				} else {
+					otherList.clearSelection();
+					currentSelected = (thisList.getSelectedValue());
+					btnCheck.setEnabled(true);
+					btnEdit.setEnabled(true);
+					lblNewLabel.setText("Details:");
+					lblNewLabel_1.setText(currentSelected.getDetails());
+				}
+			}
+		}
+		
+		listDue.clearSelection(); listOnGoing.clearSelection();
+		listDue.addListSelectionListener(new SharedListSelectionHandler(listOnGoing));
+		listOnGoing.addListSelectionListener(new SharedListSelectionHandler(listDue));
+		
 		resetStuff(lblNewLabel, lblNewLabel_1, lblToday, lblDate);
 	}
 	
