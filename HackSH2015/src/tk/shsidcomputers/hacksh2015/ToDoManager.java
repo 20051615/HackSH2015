@@ -173,7 +173,7 @@ public final class ToDoManager {
 		onGoingItemList = new DefaultListModel<>();
 		reloadItemLists();
 		
-		frame = new JFrame();
+		frame = new JFrame("Done!");
 		frame.getContentPane().setFont(new Font("Dialog", Font.PLAIN, 18));
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
