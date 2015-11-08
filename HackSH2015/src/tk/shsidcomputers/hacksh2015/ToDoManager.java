@@ -271,7 +271,7 @@ public class ToDoManager {
 		lblDue.setBounds(30, 216, 101, 30);
 		frame.getContentPane().add(lblDue);
 		
-		final JLabel lblOngoing = new JLabel("Ongoing:\r\n");
+		final JLabel lblOngoing = new JLabel("Ongoing:");
 		lblOngoing.setFont(new Font("Dialog", Font.PLAIN, 20));
 		lblOngoing.setBounds(12, 345, 119, 30);
 		frame.getContentPane().add(lblOngoing);
@@ -333,6 +333,32 @@ public class ToDoManager {
 		btnEdit.setFont(new Font("Dialog", Font.PLAIN, 18));
 		btnEdit.setBounds(490, 269, 70, 55);
 		frame.getContentPane().add(btnEdit);
+		
+		btnEdit.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (currentSelected == null) return;
+				Item beingChanged = currentSelected;
+				Input input = new Input(beingChanged);
+				input.setVisible(true);
+				Item toAdd;
+				try {
+					toAdd = input.getValue();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+					return;
+				}
+				if (toAdd == null) return;
+				current.remove(beingChanged);
+				dueItemList.removeElement(beingChanged);
+				onGoingItemList.removeElement(beingChanged);
+				current.add(toAdd);
+				reloadItemLists();
+				resetStuff(lblNewLabel, lblNewLabel_1, lblToday, lblDate);
+				currentSelected = null;
+				btnCheck.setEnabled(false);
+			}
+		});
 		resetStuff(lblNewLabel, lblNewLabel_1, lblToday, lblDate);
 	}
 	
