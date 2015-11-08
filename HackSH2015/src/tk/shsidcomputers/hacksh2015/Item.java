@@ -39,11 +39,6 @@ final class Item implements Comparable<Item> {
 	
 	@Override
 	public String toString() {
-		if (mustStartDate != null && ItemListProcessor.dateDifference(mustStartDate, dueDate) < -1) {
-			return priority + ": " + title 
-					+ " (Due " + ItemListProcessor.getYMD(dueDate)[1] + "/"
-					+ ItemListProcessor.getYMD(dueDate)[2] + ")";
-		}
 		return priority + ": " + title;
 	}
 	

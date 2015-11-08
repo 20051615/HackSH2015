@@ -327,7 +327,7 @@ public final class ToDoManager {
 		
 		lblDetailsTitle = new JLabel("");
 		lblDetailsTitle.setFont(new Font("Dialog", Font.PLAIN, 20));
-		lblDetailsTitle.setBounds(40, 426, 107, 21);
+		lblDetailsTitle.setBounds(40, 426, 542, 21);
 		frame.getContentPane().add(lblDetailsTitle);
 		
 		scrlDetailsText = new JScrollPane();
@@ -381,7 +381,15 @@ public final class ToDoManager {
 		currentSelected = newSelect;
 		btnCheck.setEnabled(true);
 		btnEdit.setEnabled(true);
-		lblDetailsTitle.setText("Details:");
+		int[] dueYMD = ItemListProcessor.getYMD(currentSelected.getDue());
+		String details; int diff;
+		details = "Details: due " + dueYMD[1] + "/" + dueYMD[2];
+		if (currentSelected.hasStartDate() &&
+			1 < (diff = ItemListProcessor.dateDifference(currentSelected.getDue(),
+					currentSelected.getStartDate()))) {
+			details += ", must start " + diff + " days before!";
+		}
+		lblDetailsTitle.setText(details);
 		txtDetailsText.setText(currentSelected.getDetails());
 	}
 	
