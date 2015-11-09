@@ -53,7 +53,7 @@ final class ItemListProcessor {
 	
 	static int dateDifference(Date date1, Date date2) {
 		return (int) Math.round(((double)
-				(date1.getTime() - date2.getTime() + 500) / (1000 * 3600 * 24)));
+				(date1.getTime() - date2.getTime()) / (1000 * 3600 * 24)));
 	}
 	
 	static Date getDayStartDate(int year, int month, int day) {

@@ -243,7 +243,6 @@ public final class ToDoManager {
 				archived.add(currentSelected);
 				dueItemList.removeElement(currentSelected);
 				onGoingItemList.removeElement(currentSelected);
-				reloadItemLists();
 				resetComponentsForDeselect();
 			}
 		});
@@ -268,8 +267,6 @@ public final class ToDoManager {
 				}
 				if (toAdd == null) return;
 				current.remove(beingChanged);
-				dueItemList.removeElement(beingChanged);
-				onGoingItemList.removeElement(beingChanged);
 				current.add(toAdd);
 				reloadItemLists();
 				resetComponentsForDeselect();
